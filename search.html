@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ريتش هاوس - متجر المراتب الفاخرة</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛏️</text></svg>" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- إضافة AOS.css -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                light: "#f8fafc",
+                DEFAULT: "#1e293b",
+                dark: "#0f172a",
+              },
+              gold: {
+                light: "#fef3c7",
+                DEFAULT: "#d4af37",
+                dark: "#b8860b",
+              },
+              accent: {
+                light: "#fed7aa",
+                DEFAULT: "#ea580c",
+                dark: "#9a3412",
+              },
+            },
+            fontFamily: {
+              luxury: ["Cormorant Garamond", "serif"],
+              sans: ["Cairo", "sans-serif"],
+            },
+            animation: {
+              "fade-in": "fadeIn 0.8s ease-out",
+              "slide-up": "slideUp 0.8s ease-out",
+              "bounce-slow": "bounce 3s infinite",
+              "pulse-slow": "pulse 4s infinite",
+              float: "float 6s ease-in-out infinite",
+              "fade-in-up": "fadeInUp 0.8s ease-out",
+              "scale-in": "scaleIn 0.5s ease-out",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+              slideUp: {
+                "0%": { transform: "translateY(30px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              fadeInUp: {
+                "0%": { transform: "translateY(40px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              scaleIn: {
+                "0%": { transform: "scale(0.9)", opacity: "0" },
+                "100%": { transform: "scale(1)", opacity: "1" },
+              },
+            },
+            backgroundImage: {
+              "luxury-pattern": "url('data:image/svg;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjJnIGZpbGw9IiNkNGFmMzciIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRhMiAyIDAgMTEtNCAwIDIgMiAwIDAxNCAwem0tOCA4YTIgMiAwIDExLTQgMCAyIDIgMCAwMTQgMHptOCA4YTIgMiAwIDExLTQgMCAyIDIgMCAwMTQgMHoiLz48L2c+PC9nPjwvc3ZnPg==')",
+              "gradient-luxury": "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+              "gradient-luxury-dark": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/css">
+      @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap");
+
+      /* ... (جميع الأنماط السابقة) ... */
+
+      /* أنماط نافذة البحث */
+      .search-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        display: none;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 100px;
+      }
+
+      .search-modal.active {
+        display: flex;
+      }
+
+      .search-container {
+        background: white;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 700px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+      }
+
+      .dark .search-container {
+        background: #1e293b;
+      }
+
+      .search-header {
+        padding: 20px;
+        border-bottom: 1px solid #e2e8f0;
+        position: relative;
+      }
+
+      .dark .search-header {
+        border-bottom: 1px solid #334155;
+      }
+
+      .search-input-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 18px;
+        padding: 12px 15px;
+        background: transparent;
+      }
+
+      .dark .search-input {
+        color: #f1f5f9;
+      }
+
+      .search-input::placeholder {
+        color: #9ca3af;
+      }
+
+      .search-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        color: #64748b;
+        cursor: pointer;
+        padding: 5px;
+      }
+
+      .search-close:hover {
+        color: #374151;
+      }
+
+      .dark .search-close:hover {
+        color: #cbd5e1;
+      }
+
+      .search-body {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .search-section {
+        margin-bottom: 25px;
+      }
+
+      .search-section-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #374151;
+        display: flex;
+        align-items: center;
+      }
+
+      .dark .search-section-title {
+        color: #cbd5e1;
+      }
+
+      .search-section-title i {
+        margin-left: 10px;
+        color: #d4af37;
+      }
+
+      .search-suggestions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .search-suggestion {
+        padding: 10px 15px;
+        background: #f8fafc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+      }
+
+      .dark .search-suggestion {
+        background: #334155;
+        border: 1px solid #475569;
+        color: #cbd5e1;
+      }
+
+      .search-suggestion:hover {
+        background: #e2e8f0;
+        transform: translateY(-2px);
+      }
+
+      .dark .search-suggestion:hover {
+        background: #475569;
+      }
+
+      .search-history {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .search-history-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: #f8fafc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+      }
+
+      .dark .search-history-item {
+        background: #334155;
+        border: 1px solid #475569;
+        color: #cbd5e1;
+      }
+
+      .search-history-item:hover {
+        background: #e2e8f0;
+      }
+
+      .dark .search-history-item:hover {
+        background: #475569;
+      }
+
+      .search-history-item .delete-history {
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 5px;
+      }
+
+      .search-history-item .delete-history:hover {
+        color: #ef4444;
+      }
+
+      .search-results {
+        display: none;
+      }
+
+      .search-results.active {
+        display: block;
+      }
+
+      .search-result-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #e2e8f0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .dark .search-result-item {
+        border-bottom: 1px solid #334155;
+      }
+
+      .search-result-item:hover {
+        background: #f8fafc;
+      }
+
+      .dark .search-result-item:hover {
+        background: #334155;
+      }
+
+      .search-result-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        margin-left: 15px;
+        object-fit: cover;
+      }
+
+      .search-result-info {
+        flex: 1;
+      }
+
+      .search-result-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .search-result-category {
+        font-size: 14px;
+        color: #64748b;
+      }
+
+      .search-result-price {
+        color: #d4af37;
+        font-weight: bold;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 30px;
+        color: #64748b;
+      }
+
+      .search-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #e2e8f0;
+        text-align: center;
+      }
+
+      .dark .search-footer {
+        border-top: 1px solid #334155;
+      }
+
+      .view-all-results {
+        color: #d4af37;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .view-all-results:hover {
+        text-decoration: underline;
+      }
+
+      .view-all-results i {
+        margin-right: 5px;
+      }
+
+      /* تحسينات للاستجابة */
+      @media (max-width: 768px) {
+        .search-modal {
+          padding-top: 50px;
+          align-items: flex-start;
+        }
+
+        .search-container {
+          width: 95%;
+          max-height: 80vh;
+        }
+
+        .search-suggestions {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+</head>
+<body class="bg-gradient-luxury dark:bg-gradient-luxury-dark text-gray-800 dark:text-white">
+    <!-- زر العودة للأعلى -->
+    <div class="scroll-top">
+      <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- شريط التنقل الفاخر - محسن -->
+    <nav class="fixed-menu header-blur dark:header-blur shadow-md">
+      <div class="nav-container">
+        <div class="flex justify-between items-center py-4">
+          <!-- الشعار -->
+          <a href="#" class="nav-logo">
+            <span class="text-3xl text-gold">🛏️</span>
+            <span class="luxury-font font-bold text-2xl text-gold">ريتش هاوس</span>
+          </a>
+
+          <!-- قوائم التنقل للشاشات الكبيرة -->
+          <div class="desktop-menu space-x-8 space-x-reverse hidden md:flex">
+            <!-- ... (روابط التنقل الحالية) ... -->
+          </div>
+
+          <!-- الأزرار -->
+          <div class="nav-buttons hidden md:flex">
+            <!-- زر البحث -->
+            <button id="search-button" class="p-2 rounded-full hover:bg-gold-light dark:hover:bg-gold-dark/20 transition">
+              <i class="fas fa-search text-lg"></i>
+            </button>
+
+            <!-- عربة التسوق -->
+            <button id="cart-button" class="relative p-2 rounded-full hover:bg-gold-light dark:hover:bg-gold-dark/20 transition">
+              <span class="text-xl">🛒</span>
+              <span id="cart-count" class="cart-badge">0</span>
+            </button>
+
+            <!-- ... (بقية الأزرار) ... -->
+          </div>
+
+          <!-- زر الهامبرغر للشاشات الصغيرة -->
+          <button id="hamburger" class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- قائمة الجوال -->
+      <div id="mobile-menu" class="mobile-menu">
+        <div class="mobile-menu-container py-4 px-6 space-y-4">
+          <!-- ... (روابط الجوال الحالية) ... -->
+          
+          <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4 space-x-reverse">
+                <!-- زر البحث للجوال -->
+                <button id="mobile-search-button" class="p-2 rounded-full hover:bg-gold-light dark:hover:bg-gold-dark/20 transition">
+                  <i class="fas fa-search"></i>
+                </button>
+                
+                <!-- ... (بقية الأزرار للجوال) ... -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- نافذة البحث المنبثقة -->
+    <div id="search-modal" class="search-modal">
+      <div class="search-container">
+        <div class="search-header">
+          <div class="search-input-container">
+            <input type="text" id="search-input" class="search-input" placeholder="ابحث عن منتجات، مقالات، فئات..." autocomplete="off">
+            <button id="search-modal-close" class="search-close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="search-body">
+          <!-- قسم الاقتراحات -->
+          <div id="search-suggestions" class="search-section">
+            <div class="search-section-title">
+              <i class="fas fa-lightbulb"></i>
+              <span>اقتراحات شائعة</span>
+            </div>
+            <div class="search-suggestions">
+              <div class="search-suggestion" data-search="مراتب فاخرة">مراتب فاخرة</div>
+              <div class="search-suggestion" data-search="مراتب طبية">مراتب طبية</div>
+              <div class="search-suggestion" data-search="مراتب تبريد">مراتب تبريد</div>
+              <div class="search-suggestion" data-search="نصائح نوم">نصائح نوم</div>
+            </div>
+          </div>
+
+          <!-- قسم تاريخ البحث (يظهر فقط للمستخدم المسجل) -->
+          <div id="search-history" class="search-section" style="display: none;">
+            <div class="search-section-title">
+              <i class="fas fa-history"></i>
+              <span>سجل البحث</span>
+            </div>
+            <div class="search-history">
+              <!-- سيتم إضافة عناصر تاريخ البحث ديناميكيًا -->
+            </div>
+          </div>
+
+          <!-- قسم نتائج البحث -->
+          <div id="search-results" class="search-results">
+            <!-- سيتم إضافة نتائج البحث ديناميكيًا -->
+          </div>
+        </div>
+        <div class="search-footer">
+          <a href="search-results.html" id="view-all-results" class="view-all-results" style="display: none;">
+            <i class="fas fa-external-link-alt"></i>
+            عرض جميع النتائج
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- باقي المحتوى -->
+    <main class="pt-20">
+      <!-- ... (بقية المحتوى) ... -->
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="bg-primary-dark text-white pt-16 pb-8">
+      <!-- ... (محتوى الفوتر) ... -->
+    </footer>
+
+    <!-- مساعد الذكاء الاصطناعي -->
+    <div class="ai-chatbot">
+      <!-- ... (محتوى مساعد الذكاء) ... -->
+    </div>
+
+    <!-- إضافة AOS.js -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      // تهيئة AOS
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100,
+      });
+
+      // بيانات محاكاة للبحث
+      const searchData = {
+        products: [
+          { id: 1, name: "ريتش سليب الفاخرة", category: "مراتب فاخرة", price: 4499, image: "https://images.unsplash.com/photo-1541123356219-284ebe98a8e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" },
+          { id: 2, name: "رويال كومفورت", category: "مراتب فاخرة", price: 5999, image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" },
+          { id: 3, name: "كول ماكس برو", category: "مراتب تبريد", price: 6499, image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" }
+        ],
+        categories: [
+          { id: 1, name: "مراتب فاخرة" },
+          { id: 2, name: "مراتب تبريد" },
+          { id: 3, name: "مراتب طبية" },
+          { id: 4, name: "المجموعة المميزة" }
+        ],
+        blogs: [
+          { id: 1, title: "كيف تختار المرتبة المثالية لنومك", category: "نصائح" },
+          { id: 2, title: "أهمية النوم الجيد لصحتك وإنتاجيتك", category: "صحة" },
+          { id: 3, title: "دليل العناية بالمرتبة وإطالة عمرها الافتراضي", category: "نصائح" }
+        ]
+      };
+
+      // وظيفة البحث
+      function performSearch(query) {
+        const results = {
+          products: [],
+          categories: [],
+          blogs: []
+        };
+
+        // البحث في المنتجات
+        results.products = searchData.products.filter(product => 
+          product.name.toLowerCase().includes(query.toLowerCase()) || 
+          product.category.toLowerCase().includes(query.toLowerCase())
+        );
+
+        // البحث في الفئات
+        results.categories = searchData.categories.filter(category => 
+          category.name.toLowerCase().includes(query.toLowerCase())
+        );
+
+        // البحث في المدونات
+        results.blogs = searchData.blogs.filter(blog => 
+          blog.title.toLowerCase().includes(query.toLowerCase()) || 
+          blog.category.toLowerCase().includes(query.toLowerCase())
+        );
+
+        return results;
+      }
+
+      // عرض نتائج البحث
+      function displaySearchResults(results) {
+        const resultsContainer = document.getElementById('search-results');
+        const viewAllLink = document.getElementById('view-all-results');
+        
+        // إخفاء الاقتراحات وتاريخ البحث
+        document.getElementById('search-suggestions').style.display = 'none';
+        document.getElementById('search-history').style.display = 'none';
+        
+        // إظهار نتائج البحث
+        resultsContainer.classList.add('active');
+        
+        // إضافة نتائج البحث
+        let resultsHTML = '';
+        
+        // المنتجات
+        if (results.products.length > 0) {
+          resultsHTML += '<div class="search-section-title"><i class="fas fa-shopping-bag"></i><span>المنتجات</span></div>';
+          results.products.forEach(product => {
+            resultsHTML += `
+              <div class="search-result-item" data-id="${product.id}" data-type="product">
+                <img src="${product.image}" alt="${product.name}" class="search-result-image">
+                <div class="search-result-info">
+                  <div class="search-result-title">${product.name}</div>
+                  <div class="search-result-category">${product.category}</div>
+                </div>
+                <div class="search-result-price">${product.price} ج.م</div>
+              </div>
+            `;
+          });
+        }
+        
+        // الفئات
+        if (results.categories.length > 0) {
+          resultsHTML += '<div class="search-section-title"><i class="fas fa-tags"></i><span>الفئات</span></div>';
+          results.categories.forEach(category => {
+            resultsHTML += `
+              <div class="search-result-item" data-id="${category.id}" data-type="category">
+                <div class="search-result-info">
+                  <div class="search-result-title">${category.name}</div>
+                </div>
+              </div>
+            `;
+          });
+        }
+        
+        // المدونات
+        if (results.blogs.length > 0) {
+          resultsHTML += '<div class="search-section-title"><i class="fas fa-newspaper"></i><span>المدونات</span></div>';
+          results.blogs.forEach(blog => {
+            resultsHTML += `
+              <div class="search-result-item" data-id="${blog.id}" data-type="blog">
+                <div class="search-result-info">
+                  <div class="search-result-title">${blog.title}</div>
+                  <div class="search-result-category">${blog.category}</div>
+                </div>
+              </div>
+            `;
+          });
+        }
+        
+        // إذا لم توجد نتائج
+        if (results.products.length === 0 && results.categories.length === 0 && results.blogs.length === 0) {
+          resultsHTML = '<div class="no-results">لم نعثر على نتائج لبحثك</div>';
+          viewAllLink.style.display = 'none';
+        } else {
+          viewAllLink.style.display = 'inline-flex';
+          // تحديث رابط عرض جميع النتائج
+          viewAllLink.href = `search-results.html?q=${encodeURIComponent(document.getElementById('search-input').value)}`;
+        }
+        
+        resultsContainer.innerHTML = resultsHTML;
+        
+        // إضافة حدث النقر على عنصر النتيجة
+        const resultItems = resultsContainer.querySelectorAll('.search-result-item');
+        resultItems.forEach(item => {
+          item.addEventListener('click', () => {
+            const type = item.getAttribute('data-type');
+            const id = item.getAttribute('data-id');
+            
+            // إغلاق نافذة البحث
+            closeSearchModal();
+            
+            // التوجيه إلى الصفحة المناسبة
+            if (type === 'product') {
+              window.location.href = `product-details.html?id=${id}`;
+            } else if (type === 'category') {
+              window.location.href = `category.html?id=${id}`;
+            } else if (type === 'blog') {
+              window.location.href = `blog-details.html?id=${id}`;
+            }
+          });
+        });
+      }
+
+      // فتح نافذة البحث
+      function openSearchModal() {
+        document.getElementById('search-modal').classList.add('active');
+        document.getElementById('search-input').focus();
+        
+        // إظهار الاقتراحات وتاريخ البحث
+        document.getElementById('search-suggestions').style.display = 'block';
+        document.getElementById('search-history').style.display = 'block';
+        
+        // إخفاء نتائج البحث
+        document.getElementById('search-results').classList.remove('active');
+        document.getElementById('view-all-results').style.display = 'none';
+      }
+
+      // إغلاق نافذة البحث
+      function closeSearchModal() {
+        document.getElementById('search-modal').classList.remove('active');
+        document.getElementById('search-input').value = '';
+      }
+
+      // إضافة أحداث البحث
+      document.addEventListener('DOMContentLoaded', () => {
+        // فتح نافذة البحث
+        document.getElementById('search-button').addEventListener('click', openSearchModal);
+        document.getElementById('mobile-search-button').addEventListener('click', openSearchModal);
+        
+        // إغلاق نافذة البحث
+        document.getElementById('search-modal-close').addEventListener('click', closeSearchModal);
+        
+        // إغلاق نافذة البحث عند النقر خارجها
+        document.getElementById('search-modal').addEventListener('click', (e) => {
+          if (e.target.id === 'search-modal') {
+            closeSearchModal();
+          }
+        });
+        
+        // البحث عند الكتابة
+        document.getElementById('search-input').addEventListener('input', (e) => {
+          const query = e.target.value.trim();
+          
+          if (query.length > 0) {
+            const results = performSearch(query);
+            displaySearchResults(results);
+          } else {
+            // إظهار الاقتراحات وتاريخ البحث
+            document.getElementById('search-suggestions').style.display = 'block';
+            document.getElementById('search-history').style.display = 'block';
+            document.getElementById('search-results').classList.remove('active');
+            document.getElementById('view-all-results').style.display = 'none';
+          }
+        });
+        
+        // البحث عند الضغط على Enter
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+              // حفظ البحث في السجل (إذا كان المستخدم مسجلًا)
+              saveToSearchHistory(query);
+              
+              // التوجيه إلى صفحة نتائج البحث الكاملة
+              window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
+            }
+          }
+        });
+        
+        // النقر على اقتراح بحث
+        const suggestions = document.querySelectorAll('.search-suggestion');
+        suggestions.forEach(suggestion => {
+          suggestion.addEventListener('click', () => {
+            const searchTerm = suggestion.getAttribute('data-search');
+            document.getElementById('search-input').value = searchTerm;
+            
+            // تنفيذ البحث
+            const results = performSearch(searchTerm);
+            displaySearchResults(results);
+            
+            // حفظ البحث في السجل (إذا كان المستخدم مسجلًا)
+            saveToSearchHistory(searchTerm);
+          });
+        });
+      });
+
+      // حفظ البحث في السجل (محاكاة)
+      function saveToSearchHistory(query) {
+        // في التطبيق الحقيقي، سيتم حفظ هذا في قاعدة بيانات أو localStorage
+        console.log(`Search saved to history: ${query}`);
+        
+        // محاكاة عرض سجل البحث للمستخدم المسجل
+        const userIsAuthenticated = false; // تغيير هذا بناءً على حالة تسجيل دخول المستخدم
+        
+        if (userIsAuthenticated) {
+          // إضافة عنصر إلى سجل البحث
+          const historyContainer = document.querySelector('.search-history');
+          const historyItem = document.createElement('div');
+          historyItem.className = 'search-history-item';
+          historyItem.innerHTML = `
+            <span>${query}</span>
+            <span class="delete-history"><i class="fas fa-times"></i></span>
+          `;
+          
+          historyContainer.appendChild(historyItem);
+          
+          // إضافة حدث لحذف عنصر من السجل
+          const deleteButton = historyItem.querySelector('.delete-history');
+          deleteButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            historyItem.remove();
+          });
+          
+          // إضافة حدث النقر على عنصر السجل
+          historyItem.addEventListener('click', () => {
+            document.getElementById('search-input').value = query;
+            const results = performSearch(query);
+            displaySearchResults(results);
+          });
+        }
+      }
+
+      // ... (بقية الكود JavaScript) ...
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نتائج البحث - ريتش هاوس</title>
+    <!-- نفس الروابط والأنماط مثل الصفحة الرئيسية -->
+</head>
+<body class="bg-gradient-luxury dark:bg-gradient-luxury-dark text-gray-800 dark:text-white">
+    <!-- نفس شريط التنقل مثل الصفحة الرئيسية -->
+
+    <main class="pt-20">
+        <section class="py-16 bg-white dark:bg-gray-800">
+            <div class="container mx-auto px-4">
+                <h1 class="text-3xl font-bold mb-8 luxury-font">نتائج البحث</h1>
+                
+                <!-- شريط البحث في صفحة النتائج -->
+                <div class="mb-8">
+                    <div class="relative">
+                        <input type="text" id="results-search-input" class="w-full px-6 py-4 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gold dark:bg-gray-800" placeholder="ابحث مرة أخرى..." value="">
+                        <button id="results-search-button" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gold">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- نتائج البحث -->
+                <div id="search-results-container">
+                    <!-- سيتم ملء هذا القسم ديناميكيًا بالنتائج -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- نفس الفوتر مثل الصفحة الرئيسية -->
+
+    <script>
+        // الحصول على استعلام البحث من URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q') || '';
+        
+        // تعيين قيمة حقل البحث
+        document.getElementById('results-search-input').value = searchQuery;
+        
+        // تنفيذ البحث وعرض النتائج
+        if (searchQuery) {
+            // استدعاء دالة البحث وعرض النتائج
+            performFullSearch(searchQuery);
+        }
+        
+        // البحث عند النقر على زر البحث
+        document.getElementById('results-search-button').addEventListener('click', () => {
+            const query = document.getElementById('results-search-input').value.trim();
+            if (query) {
+                window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
+            }
+        });
+        
+        // البحث عند الضغط على Enter
+        document.getElementById('results-search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = document.getElementById('results-search-input').value.trim();
+                if (query) {
+                    window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+        
+        // دالة البحث الكامل
+        function performFullSearch(query) {
+            // محاكاة البحث (في التطبيق الحقيقي، سيتم استدعاء API)
+            const results = performSearch(query); // استخدم نفس دالة البحث من الصفحة الرئيسية
+            
+            // عرض النتائج
+            displayFullSearchResults(results, query);
+        }
+        
+        // عرض نتائج البحث الكاملة
+        function displayFullSearchResults(results, query) {
+            const container = document.getElementById('search-results-container');
+            let resultsHTML = '';
+            
+            // عرض عدد النتائج
+            const totalResults = results.products.length + results.categories.length + results.blogs.length;
+            resultsHTML += `<div class="mb-6 text-gray-600 dark:text-gray-300">عثرنا على ${totalResults} نتيجة لـ "${query}"</div>`;
+            
+            // عرض المنتجات
+            if (results.products.length > 0) {
+                resultsHTML += `
+                    <div class="mb-12">
+                        <h2 class="text-2xl font-bold mb-6 luxury-font border-b border-gray-200 dark:border-gray-700 pb-2">المنتجات</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                `;
+                
+                results.products.forEach(product => {
+                    resultsHTML += `
+                        <div class="product-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border">
+                            <div class="relative h-60 overflow-hidden glossy-overlay">
+                                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110">
+                            </div>
+                            <div class="p-6">
+                                <h3 class="font-bold text-xl mb-2">${product.name}</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">${product.category}</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xl font-bold text-gold">${product.price} <span class="text-base font-normal">ج.م</span></span>
+                                    <button class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition" data-id="${product.id}">
+                                        <i class="fas fa-shopping-cart mr-2"></i> إضافة للسلة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsHTML += `</div></div>`;
+            }
+            
+            // عرض الفئات
+            if (results.categories.length > 0) {
+                resultsHTML += `
+                    <div class="mb-12">
+                        <h2 class="text-2xl font-bold mb-6 luxury-font border-b border-gray-200 dark:border-gray-700 pb-2">الفئات</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                `;
+                
+                results.categories.forEach(category => {
+                    resultsHTML += `
+                        <div class="category-card bg-gray-50 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg p-6 text-center gold-border">
+                            <div class="w-16 h-16 mx-auto bg-gradient-to-br from-gold-light to-gold rounded-full flex items-center justify-center mb-4">
+                                <i class="fas fa-tags text-xl text-white"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">${category.name}</h3>
+                            <a href="category.html?id=${category.id}" class="text-gold hover:text-gold-dark font-medium">
+                                استكشف <i class="fas fa-arrow-left mr-1"></i>
+                            </a>
+                        </div>
+                    `;
+                });
+                
+                resultsHTML += `</div></div>`;
+            }
+            
+            // عرض المدونات
+            if (results.blogs.length > 0) {
+                resultsHTML += `
+                    <div class="mb-12">
+                        <h2 class="text-2xl font-bold mb-6 luxury-font border-b border-gray-200 dark:border-gray-700 pb-2">المدونات</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                `;
+                
+                results.blogs.forEach(blog => {
+                    resultsHTML += `
+                        <div class="blog-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border">
+                            <div class="p-6">
+                                <h3 class="font-bold text-xl mb-3">${blog.title}</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">${blog.category}</p>
+                                <a href="blog-details.html?id=${blog.id}" class="text-gold hover:text-gold-dark font-medium flex items-center">
+                                    اقرأ المزيد
+                                    <i class="fas fa-arrow-left mr-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsHTML += `</div></div>`;
+            }
+            
+            // إذا لم توجد نتائج
+            if (totalResults === 0) {
+                resultsHTML = `
+                    <div class="text-center py-16">
+                        <i class="fas fa-search text-6xl text-gray-300 mb-6"></i>
+                        <h2 class="text-2xl font-bold mb-4">لم نعثر على نتائج</h2>
+                        <p class="text-gray-600 dark:text-gray-300 mb-6">حاول استخدام كلمات بحث مختلفة أو تصفح فئاتنا.</p>
+                        <a href="categories.html" class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium">
+                            <i class="fas fa-tags mr-2"></i> تصفح الفئات
+                        </a>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = resultsHTML;
+        }
+    </script>
+</body>
+</html>
