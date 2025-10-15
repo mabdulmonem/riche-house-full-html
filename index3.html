@@ -96,6 +96,20 @@
         padding: 0;
       }
 
+
+      html::-webkit-scrollbar {
+        display: none;
+      }
+
+      html {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
       .luxury-font {
         font-family: "Cormorant Garamond", serif;
       }
@@ -280,8 +294,9 @@
       /* مساعد الذكاء الاصطناعي */
       .ai-chatbot {
         position: fixed;
-        bottom: 30px;
-        left: 30px;
+        /* smaller offsets so it doesn't push layout on small viewports */
+        bottom: 18px;
+        left: 18px;
         z-index: 40;
       }
 
@@ -411,8 +426,9 @@
 
       .scroll-top {
         position: fixed;
-        bottom: 100px;
-        right: 30px;
+        /* keep visible but closer to edge to avoid extra space issues */
+        bottom: 28px;
+        right: 18px;
         width: 50px;
         height: 50px;
         border-radius: 50%;
@@ -691,8 +707,9 @@
 
       /* تحسينات القسم الرئيسي للجوال */
       .hero-section {
-        min-height: 80vh;
-        padding-top: 100px;
+        /* Use a clamped min-height so header + 100vh doesn't force overflow */
+        min-height: min(80vh, calc(100vh - 68px));
+        padding-top: 40px; /* reduced top padding to avoid pushing content below fold */
         position: relative;
         display: flex;
         align-items: center;
@@ -950,7 +967,8 @@
         }
 
         .hero-section {
-          min-height: 100vh;
+          /* Account for the fixed header height so 100vh doesn't add extra scroll */
+          min-height: calc(100vh - 68px);
           padding-top: 0;
         }
 
@@ -1806,7 +1824,7 @@
         }
 
         .desktop-menu {
-          /* gap: 1.5rem; */
+          gap: 1.5rem;
         }
       }
 
@@ -2249,11 +2267,11 @@
 
       /* ===== FIX FOR HORIZONTAL OVERFLOW BELOW 745px ===== */
       @media (max-width: 745px) {
-        /* Prevent horizontal scrolling */
+        /* Prevent horizontal scrolling but keep vertical scrolling */
         html, body {
           max-width: 100%;
           overflow-x: hidden;
-          position: relative;
+          /* avoid forcing position which can create stacking/layout issues */
         }
         
         /* Fix containers */
@@ -2656,7 +2674,7 @@
     </div>
 
     <!-- باقي المحتوى -->
-    <main class="pt-20">
+    <main class="pt-[68px]">
       <!-- قسم البطل -->
       <section id="home" class="hero-section relative overflow-hidden">
         <div class="hero-overlay"></div>
