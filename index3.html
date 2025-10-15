@@ -48,7 +48,7 @@
               "pulse-slow": "pulse 4s infinite",
               float: "float 6s ease-in-out infinite",
               "fade-in-up": "fadeInUp 0.8s ease-out",
-              "scale-in": "scaleIn 0.5s ease-out",
+              "scale-in": "scaleIn 0.5s ease-out",  
             },
             keyframes: {
               fadeIn: {
@@ -610,6 +610,7 @@
         bottom: 0;
         background: white;
         z-index: 50;
+        display: none;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
         padding: 2rem;
@@ -622,6 +623,15 @@
       }
 
       .mobile-menu.active {
+        display: flex;
+        transform: translateX(0);
+      }
+
+      /* RTL: slide from the right instead of the left */
+      [dir="rtl"] .mobile-menu {
+        transform: translateX(100%);
+      }
+      [dir="rtl"] .mobile-menu.active {
         transform: translateX(0);
       }
 
@@ -638,6 +648,11 @@
 
       .dark .mobile-menu-close {
         color: #f1f5f9;
+      }
+
+      /* Prevent body scroll when mobile menu is open */
+      body.mobile-menu-open {
+        overflow: hidden;
       }
 
       .mobile-nav-links {
@@ -1232,6 +1247,9 @@
         transition: transform 0.4s ease-in-out;
         width: 100%;
         max-width: 400px;
+        right: 0; /* anchor to right */
+        left: auto;
+        z-index: 60; /* above mobile menu (50) */
       }
 
       .cart-open .cart-panel {
@@ -2097,7 +2115,10 @@
       }
       @media (max-width: 1149px) {
         .mobile-menu {
-          display: flex !important; /* هتظهر العنصر */
+          display: none !important; /* keep hidden until toggled */
+        }
+        .mobile-menu.active {
+          display: flex !important; /* shown only when active */
         }
       }
 
@@ -2109,6 +2130,214 @@
         .hamburger {
           display: flex !important; /* هتظهر العنصر */
         }
+      }
+      /* ===== Overrides: RTL Cart Panel, Glassy Effect, Mobile Fixes ===== */
+      /* Fixed Cart Panel for RTL */
+      .cart-panel {
+        transform: translateX(100%);
+        transition: transform 0.4s ease-in-out;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      [dir="rtl"] .cart-panel {
+        transform: translateX(100%);
+      }
+
+      .cart-open .cart-panel {
+        transform: translateX(0);
+      }
+
+      [dir="rtl"].cart-open .cart-panel {
+        transform: translateX(0);
+      }
+
+      /* Prevent body scroll when cart is open */
+      body.cart-open {
+        overflow: hidden;
+      }
+
+      /* Mobile cart styles */
+      @media (max-width: 768px) {
+        .cart-panel {
+          width: 100vw;
+          max-width: 100vw;
+          height: 100vh;
+          top: 0;
+          right: 0;
+          left: auto;
+          padding-top: 80px; /* allow a bit more for fixed header */
+        }
+
+        [dir="rtl"] .cart-panel {
+          right: 0;
+          left: auto;
+        }
+
+        /* Ensure cart content is properly sized */
+        .cart-panel > div {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        #cart-items {
+          flex: 1;
+          overflow-y: auto;
+        }
+      }
+
+      /* Fixed Glassy Effect */
+      .glossy-overlay {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate; /* Creates new stacking context */
+      }
+
+      .glossy-overlay::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        transition: left 0.7s ease-in-out;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .glossy-overlay:hover::before {
+        left: 100%;
+      }
+
+      /* Ensure button content stays above the effect */
+      .luxury-btn {
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Fix for dark mode */
+      .dark .glossy-overlay::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+      }
+
+      /* Specific fix for product card glossy overlays */
+      .product-card .glossy-overlay::before,
+      .category-card .glossy-overlay::before,
+      .blog-card .glossy-overlay::before {
+        z-index: 1;
+      }
+
+      /* Ensure images and content are above the effect */
+      .product-card img,
+      .category-card img,
+      .blog-card img {
+        position: relative;
+        z-index: 0;
+      }
+
+      /* ===== FIX FOR HORIZONTAL OVERFLOW BELOW 745px ===== */
+      @media (max-width: 745px) {
+        /* Prevent horizontal scrolling */
+        html, body {
+          max-width: 100%;
+          overflow-x: hidden;
+          position: relative;
+        }
+        
+        /* Fix containers */
+        .container {
+          max-width: 100vw;
+          padding-left: 0.75rem !important;
+          padding-right: 0.75rem !important;
+        }
+        
+        .nav-container {
+          padding: 0 0.75rem !important;
+        }
+        
+        /* Fix AI chatbot */
+        .ai-chatbot-window {
+          width: 95vw !important;
+          max-width: 95vw !important;
+          left: 2.5vw !important;
+          right: 2.5vw !important;
+        }
+        
+        /* Fix countdown */
+        .countdown-item {
+          min-width: 40px !important;
+          padding: 6px !important;
+          margin: 0 2px !important;
+        }
+        
+        .countdown-value {
+          font-size: 16px !important;
+        }
+        
+        /* Fix hero section */
+        .hero-section h1 {
+          font-size: 2rem !important;
+          padding: 0 0.5rem;
+          word-wrap: break-word;
+        }
+        
+        .hero-buttons {
+          padding: 0 0.5rem;
+        }
+        
+        .hero-buttons a {
+          width: 100% !important;
+          margin: 0.25rem 0 !important;
+        }
+        
+        /* Ensure all content fits */
+        .grid-cols-1, 
+        .grid-cols-2, 
+        .grid-cols-3, 
+        .grid-cols-4 {
+          gap: 1rem !important;
+        }
+        
+        /* Fix images and media */
+        img, .product-image, .blog-card-image {
+          max-width: 100% !important;
+          height: auto !important;
+        }
+        
+        /* Fix cart panel */
+        .cart-panel {
+          width: 100vw !important;
+          max-width: 100vw !important;
+        }
+        
+        /* Fix mobile menu */
+        .mobile-menu {
+          width: 100vw !important;
+          left: 0 !important;
+          right: 0 !important;
+        }
+      }
+
+      /* Additional safety measures */
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 100%;
+        overflow-x: hidden;
       }
     </style>
   </head>
@@ -2296,26 +2525,29 @@
 
       <!-- قائمة الجوال -->
       <div id="mobile-menu" class="mobile-menu">
-        <div class="mobile-menu-container py-4 px-6 space-y-4">
-          <a href="#home" class="block py-2 hover:text-gold transition"
+        <button class="mobile-menu-close" aria-label="Close mobile menu">
+          <i class="fas fa-times"></i>
+        </button>
+          <div class="mobile-menu-container py-4 px-6 space-y-4">
+          <a href="#home" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >الرئيسية</a
           >
-          <a href="#categories" class="block py-2 hover:text-gold transition"
+          <a href="#categories" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >التصنيفات</a
           >
-          <a href="#products" class="block py-2 hover:text-gold transition"
+          <a href="#products" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >المنتجات</a
           >
-          <a href="#offers" class="block py-2 hover:text-gold transition"
+          <a href="#offers" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >العروض</a
           >
-          <a href="#about" class="block py-2 hover:text-gold transition"
+          <a href="#about" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >عنّا</a
           >
-          <a href="#blog" class="block py-2 hover:text-gold transition"
+          <a href="#blog" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >المدونة</a
           >
-          <a href="#contact" class="block py-2 hover:text-gold transition"
+          <a href="#contact" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >اتصل بنا</a
           >
           <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -2370,10 +2602,10 @@
                 </div>
               </div>
               <a
-                href="#"
-                class="luxury-btn text-white px-4 py-2 rounded-full text-sm"
-                >تسجيل الدخول</a
-              >
+              href="#"
+              class="luxury-btn text-white px-4 py-2 rounded-full text-sm glossy-overlay"
+              >تسجيل الدخول</a
+            >
             </div>
           </div>
         </div>
@@ -2631,7 +2863,7 @@
                     >4,499 <span class="text-base font-normal">ج.م</span></span
                   >
                   <button
-                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition"
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
                     data-id="1"
                     data-name="ريتش سليب الفاخرة"
                     data-price="4499"
@@ -2681,7 +2913,7 @@
                     >5,999 <span class="text-base font-normal">ج.م</span></span
                   >
                   <button
-                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition"
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
                     data-id="2"
                     data-name="رويال كومفورت"
                     data-price="5999"
@@ -2737,7 +2969,7 @@
                     >6,499 <span class="text-base font-normal">ج.م</span></span
                   >
                   <button
-                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition"
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
                     data-id="3"
                     data-name="كول ماكس برو"
                     data-price="6499"
@@ -2827,7 +3059,7 @@
                     <span class="price-original">4,499 ج.م</span>
                   </div>
                   <button
-                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition"
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
                     data-id="1"
                     data-name="ريتش سليب الفاخرة"
                     data-price="3374"
@@ -2882,7 +3114,7 @@
                     <span class="price-original">5,999 ج.م</span>
                   </div>
                   <button
-                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition"
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
                     data-id="2"
                     data-name="رويال كومفورت"
                     data-price="4799"
@@ -2937,7 +3169,7 @@
                     <span class="price-original">6,499 ج.م</span>
                   </div>
                   <button
-                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition"
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
                     data-id="3"
                     data-name="كول ماكس برو"
                     data-price="5524"
@@ -2966,8 +3198,13 @@
       </section>
 
       <!-- قسم عنّا -->
-      <section id="about" class="py-20 bg-gray-50 dark:bg-gray-900">
+<!-- قسم عنّا -->
+      <section
+        id="about"
+        class="py-20 bg-gray-50 dark:bg-gray-900 overflow-hidden relative"
+      >
         <div class="container mx-auto px-4">
+          <!-- Section Title -->
           <h2
             class="text-3xl font-bold text-center mb-4 luxury-font section-title"
             data-aos="fade-up"
@@ -2982,73 +3219,117 @@
             قصتنا ورسالتنا في توفير أفضل تجربة نوم لعملائنا
           </p>
 
-          <div class="flex flex-col lg:flex-row items-center gap-12 mb-16">
-            <div class="lg:w-1/2" data-aos="fade-right" data-aos-delay="300">
-              <div class="relative">
-                <div
-                  class="w-full h-96 bg-gradient-to-br from-gold-light to-gold rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden glossy-overlay"
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1158&q=80"
-                    alt="عن ريتش هاوس"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div
-                  class="absolute -bottom-6 -left-6 w-32 h-32 bg-gold/20 rounded-full"
-                ></div>
-                <div
-                  class="absolute -top-6 -right-6 w-24 h-24 bg-accent/20 rounded-full"
-                ></div>
+          <!-- About Content -->
+          <div
+            class="flex flex-col lg:flex-row items-center gap-12 mb-16"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <!-- Image Section -->
+            <div class="lg:w-1/2 relative" data-aos="fade-right" data-aos-delay="300">
+              <div
+                class="w-full h-96 bg-gradient-to-br from-gold-light to-gold rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden glossy-overlay"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1158&q=80"
+                  alt="عن ريتش هاوس"
+                  class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-out"
+                />
               </div>
+
+              <!-- Decorative Circles -->
+              <div
+                class="absolute bottom-0 left-0 w-28 h-28 bg-gold/20 rounded-full blur-xl"
+              ></div>
+              <div
+                class="absolute top-0 right-0 w-20 h-20 bg-accent/20 rounded-full blur-lg"
+              ></div>
             </div>
-            <div class="lg:w-1/2" data-aos="fade-left" data-aos-delay="300">
+
+            <!-- Text Content -->
+            <div class="lg:w-1/2" data-aos="fade-left" data-aos-delay="400">
               <h3 class="text-2xl font-bold mb-6 luxury-font">
                 قصتنا <span class="text-gold">ورسالتنا</span>
               </h3>
               <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-                تأسست ريتش هاوس في عام 2010 بمهمة واضحة: توفير أفضل تجربة نوم
-                ممكنة لعملائنا. نحن نؤمن بأن النوم الجيد هو أساس الحياة الصحية
-                والإنتاجية.
+                تأسست ريتش هاوس في عام 2010 بمهمة واضحة: توفير أفضل تجربة نوم ممكنة
+                لعملائنا. نحن نؤمن بأن النوم الجيد هو أساس الحياة الصحية والإنتاجية.
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-                على مر السنين، طورنا شراكات مع أفضل مصنعي المراتب عالمياً،
-                وانتقينا بعناية كل منتج نقدمه لضمان أعلى معايير الجودة والراحة.
+                على مر السنين، طورنا شراكات مع أفضل مصنعي المراتب عالمياً، وانتقينا
+                بعناية كل منتج نقدمه لضمان أعلى معايير الجودة والراحة.
               </p>
               <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-                مهمتنا لا تقتصر على بيع المراتب فحسب، بل نهدف إلى تحسين جودة
-                حياة عملائنا من خلال توفير حلول نوم مخصصة تناسب احتياجاتهم
-                الفردية.
+                مهمتنا لا تقتصر على بيع المراتب فحسب، بل نهدف إلى تحسين جودة حياة
+                عملائنا من خلال توفير حلول نوم مخصصة تناسب احتياجاتهم الفردية.
               </p>
+
               <a
                 href="#contact"
-                class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium inline-block glossy-overlay"
+                class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium inline-block glossy-overlay transition-all duration-300 hover:scale-105 hover:shadow-lg"
               >
                 <i class="fas fa-phone-alt mr-2"></i> تواصل معنا
               </a>
             </div>
           </div>
 
-          <div class="about-stats">
-            <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
-              <div class="stat-value">13+</div>
-              <div class="stat-label">سنوات من الخبرة</div>
+          <!-- Stats Section -->
+          <div
+            class="about-stats grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+            data-aos="zoom-in-up"
+          >
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="100"
+              >
+                13+
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                سنوات من الخبرة
+              </div>
             </div>
-            <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
-              <div class="stat-value">50,000+</div>
-              <div class="stat-label">عميل راضي</div>
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="200"
+              >
+                50,000+
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                عميل راضي
+              </div>
             </div>
-            <div class="stat-item" data-aos="zoom-in" data-aos-delay="300">
-              <div class="stat-value">15</div>
-              <div class="stat-label">ضمان سنوي</div>
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="300"
+              >
+                15
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                ضمان سنوي
+              </div>
             </div>
-            <div class="stat-item" data-aos="zoom-in" data-aos-delay="400">
-              <div class="stat-value">98%</div>
-              <div class="stat-label">عملاء موصي بنا</div>
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="400"
+              >
+                98%
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                عملاء موصي بنا
+              </div>
             </div>
           </div>
         </div>
       </section>
+
 
       <!-- قسم المدونة -->
       <section id="blog" class="py-20 bg-white dark:bg-gray-800">
@@ -3377,34 +3658,51 @@
       </section>
 
       <!-- قسم الشركاء -->
-      <section class="py-16 bg-white dark:bg-gray-800">
-        <div class="container mx-auto px-4">
-          <h2
-            class="text-2xl font-bold text-center mb-12 luxury-font"
-            data-aos="fade-up"
-          >
-            شركاؤنا في <span class="text-gold">النجاح</span>
-          </h2>
+<!-- قسم شركاؤنا في النجاح -->
+    <section class="py-16 bg-white dark:bg-gray-800 overflow-hidden relative">
+      <div class="container mx-auto px-4">
+        <h2
+          class="text-2xl font-bold text-center mb-12 luxury-font"
+          data-aos="fade-up"
+        >
+          شركاؤنا في <span class="text-gold">النجاح</span>
+        </h2>
 
-          <div class="client-logos" data-aos="zoom-in" data-aos-delay="200">
-            <div class="client-logo w-32 h-16 flex items-center justify-center">
-              <span class="text-2xl font-bold text-gray-400">SLEEPWELL</span>
-            </div>
-            <div class="client-logo w-32 h-16 flex items-center justify-center">
-              <span class="text-2xl font-bold text-gray-400">DORMEVO</span>
-            </div>
-            <div class="client-logo w-32 h-16 flex items-center justify-center">
-              <span class="text-2xl font-bold text-gray-400">SERTA</span>
-            </div>
-            <div class="client-logo w-32 h-16 flex items-center justify-center">
-              <span class="text-2xl font-bold text-gray-400">TEMPUR</span>
-            </div>
-            <div class="client-logo w-32 h-16 flex items-center justify-center">
-              <span class="text-2xl font-bold text-gray-400">SIMMONS</span>
-            </div>
+        <!-- Client Logos -->
+        <div
+          class="client-logos flex flex-wrap justify-center items-center gap-8 md:gap-12"
+          data-aos="zoom-in"
+          data-aos-delay="200"
+        >
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">SLEEPWELL</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">DORMEVO</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">SERTA</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">TEMPUR</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">SIMMONS</span>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+
 
       <!-- قسم الاشتراك في النشرة البريدية -->
       <section
@@ -3730,14 +4028,67 @@
         document.body.classList.remove("cart-open");
       });
 
+      // Close cart when clicking outside on mobile (RTL-aware)
+      document.addEventListener("click", (e) => {
+        if (
+          window.innerWidth <= 768 &&
+          document.body.classList.contains("cart-open") &&
+          !cartPanel.contains(e.target) &&
+          !cartButton.contains(e.target) &&
+          !mobileCartButton.contains(e.target)
+        ) {
+          document.body.classList.remove("cart-open");
+        }
+      });
+
+      // Improved touch handling for mobile
+      document.addEventListener("touchstart", function () {}, { passive: true });
+
+      // Prevent zoom on double tap for buttons/links
+      document.querySelectorAll("button, a, .luxury-btn").forEach((element) => {
+        element.addEventListener(
+          "touchstart",
+          function (e) {
+            if (e.touches.length > 1) {
+              e.preventDefault();
+            }
+          },
+          { passive: false }
+        );
+      });
+
+      // Fix RTL specific positioning for AI chatbot on mobile
+      function fixRTLMobileIssues() {
+        if (document.dir === "rtl") {
+          const aiChatbot = document.querySelector(".ai-chatbot");
+          if (aiChatbot && window.innerWidth < 768) {
+            aiChatbot.style.right = "auto";
+            aiChatbot.style.left = "20px";
+          }
+        }
+      }
+
+      window.addEventListener("load", fixRTLMobileIssues);
+      window.addEventListener("resize", fixRTLMobileIssues);
+
       // وظيفة قائمة الجوال
       const hamburger = document.getElementById("hamburger");
       const mobileMenu = document.getElementById("mobile-menu");
+      const mobileMenuClose = document.querySelector(".mobile-menu-close");
 
-      hamburger.addEventListener("click", () => {
+      function toggleMobileMenu() {
+        const isOpening = !mobileMenu.classList.contains("active");
         mobileMenu.classList.toggle("active");
         hamburger.classList.toggle("active");
-      });
+        if (isOpening) {
+          document.body.classList.add("mobile-menu-open");
+        } else {
+          document.body.classList.remove("mobile-menu-open");
+        }
+      }
+
+      hamburger.addEventListener("click", toggleMobileMenu);
+      if (mobileMenuClose) mobileMenuClose.addEventListener("click", toggleMobileMenu);
 
       // إغلاق قائمة الجوال عند النقر على رابط
       const mobileMenuLinks = mobileMenu.querySelectorAll("a");
@@ -3745,7 +4096,36 @@
         link.addEventListener("click", () => {
           mobileMenu.classList.remove("active");
           hamburger.classList.remove("active");
+          document.body.classList.remove("mobile-menu-open");
         });
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          window.innerWidth <= 1150 &&
+          mobileMenu.classList.contains("active") &&
+          !mobileMenu.contains(e.target) &&
+          !hamburger.contains(e.target)
+        ) {
+          toggleMobileMenu();
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+          toggleMobileMenu();
+        }
+      });
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 1150) {
+          mobileMenu.classList.remove("active");
+          hamburger.classList.remove("active");
+          document.body.classList.remove("mobile-menu-open");
+        }
       });
 
       // وظيفة زر العودة للأعلى
