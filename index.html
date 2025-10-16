@@ -48,7 +48,7 @@
               "pulse-slow": "pulse 4s infinite",
               float: "float 6s ease-in-out infinite",
               "fade-in-up": "fadeInUp 0.8s ease-out",
-              "scale-in": "scaleIn 0.5s ease-out",
+              "scale-in": "scaleIn 0.5s ease-out",  
             },
             keyframes: {
               fadeIn: {
@@ -94,6 +94,20 @@
         scroll-behavior: smooth;
         margin: 0;
         padding: 0;
+      }
+
+
+      html::-webkit-scrollbar {
+        display: none;
+      }
+
+      html {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
       }
 
       .luxury-font {
@@ -280,8 +294,9 @@
       /* مساعد الذكاء الاصطناعي */
       .ai-chatbot {
         position: fixed;
-        bottom: 30px;
-        left: 30px;
+        /* smaller offsets so it doesn't push layout on small viewports */
+        bottom: 18px;
+        left: 18px;
         z-index: 40;
       }
 
@@ -411,8 +426,9 @@
 
       .scroll-top {
         position: fixed;
-        bottom: 100px;
-        right: 30px;
+        /* keep visible but closer to edge to avoid extra space issues */
+        bottom: 28px;
+        right: 18px;
         width: 50px;
         height: 50px;
         border-radius: 50%;
@@ -610,6 +626,7 @@
         bottom: 0;
         background: white;
         z-index: 50;
+        display: none;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
         padding: 2rem;
@@ -622,6 +639,15 @@
       }
 
       .mobile-menu.active {
+        display: flex;
+        transform: translateX(0);
+      }
+
+      /* RTL: slide from the right instead of the left */
+      [dir="rtl"] .mobile-menu {
+        transform: translateX(100%);
+      }
+      [dir="rtl"] .mobile-menu.active {
         transform: translateX(0);
       }
 
@@ -638,6 +664,11 @@
 
       .dark .mobile-menu-close {
         color: #f1f5f9;
+      }
+
+      /* Prevent body scroll when mobile menu is open */
+      body.mobile-menu-open {
+        overflow: hidden;
       }
 
       .mobile-nav-links {
@@ -676,8 +707,9 @@
 
       /* تحسينات القسم الرئيسي للجوال */
       .hero-section {
-        min-height: 80vh;
-        padding-top: 100px;
+        /* Use a clamped min-height so header + 100vh doesn't force overflow */
+        min-height: min(80vh, calc(100vh - 68px));
+        padding-top: 40px; /* reduced top padding to avoid pushing content below fold */
         position: relative;
         display: flex;
         align-items: center;
@@ -865,84 +897,6 @@
         background: #334155;
       }
 
-      
-      .filter-option {
-        transition: all 0.3s ease;
-      }
-
-      .filter-option:hover {
-        background-color: rgba(212, 175, 55, 0.1);
-      }
-
-      .filter-option.active {
-        background-color: rgba(212, 175, 55, 0.2);
-        color: #d4af37;
-        font-weight: bold;
-      }
-          .category-card {
-        transition: all 0.4s ease;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .category-card:hover {
-        transform: translateY(-8px);
-      }
-
-      .category-card::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #d4af37, #ea580c);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.4s ease;
-      }
-
-           /* أنماط خاصة بصفحة التصنيفات */
-      .category-image {
-        height: 200px;
-        background-size: cover;
-        background-position: center;
-        transition: transform 0.6s ease;
-      }
-
-      .category-card:hover .category-image {
-        transform: scale(1.05);
-      }
-
-      .product-count {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        z-index: 10;
-      }
-
-      .featured-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: linear-gradient(135deg, #ea580c 0%, #d4af37 100%);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-        z-index: 10;
-      }
-
-      .category-card:hover::after {
-        transform: scaleX(1);
-      }
-
       /* Medium screens (641px to 768px) */
       @media (min-width: 641px) {
         .container {
@@ -1013,7 +967,8 @@
         }
 
         .hero-section {
-          min-height: 100vh;
+          /* Account for the fixed header height so 100vh doesn't add extra scroll */
+          min-height: calc(100vh - 68px);
           padding-top: 0;
         }
 
@@ -1310,6 +1265,9 @@
         transition: transform 0.4s ease-in-out;
         width: 100%;
         max-width: 400px;
+        right: 0; /* anchor to right */
+        left: auto;
+        z-index: 60; /* above mobile menu (50) */
       }
 
       .cart-open .cart-panel {
@@ -1866,7 +1824,7 @@
         }
 
         .desktop-menu {
-          /* gap: 1.5rem; */
+          gap: 1.5rem;
         }
       }
 
@@ -2175,7 +2133,10 @@
       }
       @media (max-width: 1149px) {
         .mobile-menu {
-          display: flex !important; /* هتظهر العنصر */
+          display: none !important; /* keep hidden until toggled */
+        }
+        .mobile-menu.active {
+          display: flex !important; /* shown only when active */
         }
       }
 
@@ -2188,90 +2149,214 @@
           display: flex !important; /* هتظهر العنصر */
         }
       }
+      /* ===== Overrides: RTL Cart Panel, Glassy Effect, Mobile Fixes ===== */
+      /* Fixed Cart Panel for RTL */
+      .cart-panel {
+        transform: translateX(100%);
+        transition: transform 0.4s ease-in-out;
+        width: 100%;
+        max-width: 400px;
+      }
 
+      [dir="rtl"] .cart-panel {
+        transform: translateX(100%);
+      }
 
-        /* أنماط خاصة بصفحة الفروع */
-        .branch-card {
-            transition: all 0.4s ease;
-            overflow: hidden;
-            position: relative;
+      .cart-open .cart-panel {
+        transform: translateX(0);
+      }
+
+      [dir="rtl"].cart-open .cart-panel {
+        transform: translateX(0);
+      }
+
+      /* Prevent body scroll when cart is open */
+      body.cart-open {
+        overflow: hidden;
+      }
+
+      /* Mobile cart styles */
+      @media (max-width: 768px) {
+        .cart-panel {
+          width: 100vw;
+          max-width: 100vw;
+          height: 100vh;
+          top: 0;
+          right: 0;
+          left: auto;
+          padding-top: 80px; /* allow a bit more for fixed header */
         }
 
-        .branch-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        [dir="rtl"] .cart-panel {
+          right: 0;
+          left: auto;
         }
 
-        .branch-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #d4af37, #ea580c);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
+        /* Ensure cart content is properly sized */
+        .cart-panel > div {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
         }
 
-        .branch-card:hover::before {
-            transform: scaleX(1);
+        #cart-items {
+          flex: 1;
+          overflow-y: auto;
         }
+      }
 
-        .branch-image {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-            transition: transform 0.6s ease;
-        }
+      /* Fixed Glassy Effect */
+      .glossy-overlay {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate; /* Creates new stacking context */
+      }
 
-        .branch-card:hover .branch-image {
-            transform: scale(1.05);
-        }
+      .glossy-overlay::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        transition: left 0.7s ease-in-out;
+        z-index: 1;
+        pointer-events: none;
+      }
 
-        .contact-info-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+      .glossy-overlay:hover::before {
+        left: 100%;
+      }
 
-        .contact-info-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #d4af37, #ea580c);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 15px;
-            color: white;
-            font-size: 1rem;
-        }
+      /* Ensure button content stays above the effect */
+      .luxury-btn {
+        position: relative;
+        z-index: 2;
+      }
 
-        .map-container {
-            height: 400px;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-top: 30px;
-        }
+      /* Fix for dark mode */
+      .dark .glossy-overlay::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+      }
 
-        /* تحسينات للاستجابة */
-        @media (max-width: 768px) {
-            .branch-image {
-                height: 180px;
-            }
-            
-            .section-title::after {
-                width: 60px;
-            }
-        }
+      /* Specific fix for product card glossy overlays */
+      .product-card .glossy-overlay::before,
+      .category-card .glossy-overlay::before,
+      .blog-card .glossy-overlay::before {
+        z-index: 1;
+      }
 
-        @media (max-width: 480px) {
-            .branch-image {
-                height: 150px;
-            }
+      /* Ensure images and content are above the effect */
+      .product-card img,
+      .category-card img,
+      .blog-card img {
+        position: relative;
+        z-index: 0;
+      }
+
+      /* ===== FIX FOR HORIZONTAL OVERFLOW BELOW 745px ===== */
+      @media (max-width: 745px) {
+        /* Prevent horizontal scrolling but keep vertical scrolling */
+        html, body {
+          max-width: 100%;
+          overflow-x: hidden;
+          /* avoid forcing position which can create stacking/layout issues */
         }
+        
+        /* Fix containers */
+        .container {
+          max-width: 100vw;
+          padding-left: 0.75rem !important;
+          padding-right: 0.75rem !important;
+        }
+        
+        .nav-container {
+          padding: 0 0.75rem !important;
+        }
+        
+        /* Fix AI chatbot */
+        .ai-chatbot-window {
+          width: 95vw !important;
+          max-width: 95vw !important;
+          left: 2.5vw !important;
+          right: 2.5vw !important;
+        }
+        
+        /* Fix countdown */
+        .countdown-item {
+          min-width: 40px !important;
+          padding: 6px !important;
+          margin: 0 2px !important;
+        }
+        
+        .countdown-value {
+          font-size: 16px !important;
+        }
+        
+        /* Fix hero section */
+        .hero-section h1 {
+          font-size: 2rem !important;
+          padding: 0 0.5rem;
+          word-wrap: break-word;
+        }
+        
+        .hero-buttons {
+          padding: 0 0.5rem;
+        }
+        
+        .hero-buttons a {
+          width: 100% !important;
+          margin: 0.25rem 0 !important;
+        }
+        
+        /* Ensure all content fits */
+        .grid-cols-1, 
+        .grid-cols-2, 
+        .grid-cols-3, 
+        .grid-cols-4 {
+          gap: 1rem !important;
+        }
+        
+        /* Fix images and media */
+        img, .product-image, .blog-card-image {
+          max-width: 100% !important;
+          height: auto !important;
+        }
+        
+        /* Fix cart panel */
+        .cart-panel {
+          width: 100vw !important;
+          max-width: 100vw !important;
+        }
+        
+        /* Fix mobile menu */
+        .mobile-menu {
+          width: 100vw !important;
+          left: 0 !important;
+          right: 0 !important;
+        }
+      }
+
+      /* Additional safety measures */
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 100%;
+        overflow-x: hidden;
+      }
     </style>
   </head>
   <body
@@ -2296,10 +2381,10 @@
 
           <!-- قوائم التنقل للشاشات الكبيرة -->
           <div class="desktop-menu space-x-8 space-x-reverse hidden md:flex">
-            <a href="#home" class="hover:text-gold transition relative group">
+            <a href="#home" class="hover:text-gold transition relative text-gold">
               الرئيسية
               <span
-                class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold transition-all group-hover:w-full"
+                class="absolute -bottom-1 left-0 w-full h-0.5 bg-gold transition-all "
               ></span>
             </a>
             <a
@@ -2347,6 +2432,15 @@
                 class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold transition-all group-hover:w-full"
               ></span>
             </a>
+            <a
+            href="#branches"
+            class="hover:text-gold transition relative group"
+          >
+            فروعنا
+            <span
+              class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold transition-all group-hover:w-full"
+            ></span>
+          </a>
           </div>
 
           <!-- الأزرار -->
@@ -2458,27 +2552,33 @@
 
       <!-- قائمة الجوال -->
       <div id="mobile-menu" class="mobile-menu">
-        <div class="mobile-menu-container py-4 px-6 space-y-4">
-          <a href="#home" class="block py-2 hover:text-gold transition"
+        <button class="mobile-menu-close" aria-label="Close mobile menu">
+          <i class="fas fa-times"></i>
+        </button>
+          <div class="mobile-menu-container py-4 px-6 space-y-4">
+          <a href="#home" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >الرئيسية</a
           >
-          <a href="#categories" class="block py-2 hover:text-gold transition"
+          <a href="#categories" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >التصنيفات</a
           >
-          <a href="#products" class="block py-2 hover:text-gold transition"
+          <a href="#products" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >المنتجات</a
           >
-          <a href="#offers" class="block py-2 hover:text-gold transition"
+          <a href="#offers" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >العروض</a
           >
-          <a href="#about" class="block py-2 hover:text-gold transition"
+          <a href="#about" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >عنّا</a
           >
-          <a href="#blog" class="block py-2 hover:text-gold transition"
+          <a href="#blog" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >المدونة</a
           >
-          <a href="#contact" class="block py-2 hover:text-gold transition"
+          <a href="#contact" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
             >اتصل بنا</a
+          >
+          <a href="#branches" class="block py-2 hover:text-gold transition border-b border-gray-200 dark:border-gray-700"
+            >فروعنا</a
           >
           <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between">
@@ -2532,10 +2632,10 @@
                 </div>
               </div>
               <a
-                href="#"
-                class="luxury-btn text-white px-4 py-2 rounded-full text-sm"
-                >تسجيل الدخول</a
-              >
+              href="#"
+              class="luxury-btn text-white px-4 py-2 rounded-full text-sm glossy-overlay"
+              >تسجيل الدخول</a
+            >
             </div>
           </div>
         </div>
@@ -2584,287 +2684,1133 @@
         </div>
       </div>
     </div>
-<!-- محتوى صفحة التصنيفات -->
-    <main class="pt-20">
-        <!-- قسم البطل -->
-        <section class="py-20 bg-gradient-to-r from-gold/10 to-accent/10 dark:from-gold/20 dark:to-accent/20">
-            <div class="container mx-auto px-4">
-                <div class="max-w-3xl mx-auto text-center">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-6 luxury-font" data-aos="fade-up">
-                        تصنيفات <span class="text-gold">ريتش هاوس</span>
-                    </h1>
-                    <p class="text-gray-600 dark:text-gray-300 mb-8 text-lg" data-aos="fade-up" data-aos-delay="200">
-                        اكتشف مجموعتنا الواسعة من المراتب الفاخرة المصممة لتوفر لك تجربة نوم استثنائية
-                    </p>
-                </div>
+
+    <!-- باقي المحتوى -->
+    <main class="pt-[68px]">
+      <!-- قسم البطل -->
+      <section id="home" class="hero-section relative overflow-hidden">
+        <div class="hero-overlay"></div>
+        <img
+          src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          alt="مراتب فاخرة"
+          class="hero-bg"
+        />
+        <div class="hero-logo">
+          <span class="text-white text-9xl opacity-20">🛏️</span>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+          <div
+            class="max-w-3xl mx-auto text-center text-white"
+            data-aos="fade-up"
+          >
+            <h1
+              class="text-5xl md:text-7xl font-bold mb-6 luxury-font text-glow"
+            >
+              ريتش هاوس
+            </h1>
+            <p class="text-xl md:text-2xl mb-8">
+              نقدم لك أفضل المراتب الفاخرة لتجربة نوم لا تُنسى
+            </p>
+            <div class="hero-buttons flex flex-wrap justify-center gap-4">
+              <a
+                href="#products"
+                class="luxury-btn text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg"
+              >
+                تسوق الآن
+              </a>
+              <a
+                href="#about"
+                class="border-2 border-white text-white px-8 py-3 rounded-full text-lg font-bold hover:bg-white hover:text-gray-800 transition"
+              >
+                تعرف علينا
+              </a>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- قسم التصفية والبحث -->
-        <section class="py-8 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-            <div class="container mx-auto px-4">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                    <!-- شريط البحث -->
-                    <div class="w-full md:w-1/3" data-aos="fade-right">
-                        <div class="relative">
-                            <input
-                                type="text"
-                                placeholder="ابحث عن تصنيف..."
-                                class="w-full border border-gray-300 dark:border-gray-600 rounded-full px-6 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-gold dark:bg-gray-700"
-                            />
-                            <button class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
+      <!-- قسم التصنيفات -->
+      <section id="categories" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl font-bold text-center mb-4 luxury-font section-title"
+            data-aos="fade-up"
+          >
+            تصنيفات <span class="text-gold">المنتجات</span>
+          </h2>
+          <p
+            class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            استكشف مجموعتنا المميزة من المراتب المصنفة حسب النوع والجودة
+            والاستخدام
+          </p>
 
-                    <!-- خيارات التصفية -->
-                    <div class="w-full md:w-2/3" data-aos="fade-left">
-                        <div class="flex flex-wrap gap-4 justify-center md:justify-end">
-                            <button class="filter-option active px-4 py-2 rounded-full border border-gold text-gold">
-                                الكل
-                            </button>
-                            <button class="filter-option px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-gold hover:text-gold transition">
-                                الأكثر مبيعاً
-                            </button>
-                            <button class="filter-option px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-gold hover:text-gold transition">
-                                الأحدث
-                            </button>
-                            <button class="filter-option px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 hover:border-gold hover:text-gold transition">
-                                المميزة
-                            </button>
-                        </div>
-                    </div>
-                </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- تصنيف 1 -->
+            <div
+              class="category-card bg-gray-50 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg p-6 text-center gold-border"
+              data-aos="zoom-in"
+              data-aos-delay="100"
+            >
+              <div
+                class="w-20 h-20 mx-auto bg-gradient-to-br from-gold-light to-gold rounded-full flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-bed text-3xl text-white"></i>
+              </div>
+              <h3 class="font-bold text-xl mb-2">مراتب فاخرة</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4">
+                مجموعة المراتب الفاخرة المصنوعة من أفضل المواد
+              </p>
+              <a href="categories.html" class="text-gold hover:text-gold-dark font-medium">
+                استكشف <i class="fas fa-arrow-left mr-1"></i>
+              </a>
             </div>
-        </section>
 
-        <!-- قسم التصنيفات -->
-        <section class="py-20 bg-white dark:bg-gray-800">
-            <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-4 luxury-font section-title" data-aos="fade-up">
-                    جميع <span class="text-gold">التصنيفات</span>
-                </h2>
-                <p class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-                    اختر من بين مجموعة واسعة من المراتب المصممة بعناية لتلبي احتياجاتك المختلفة وتوفر لك الراحة المثلى
+            <!-- تصنيف 2 -->
+            <div
+              class="category-card bg-gray-50 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg p-6 text-center gold-border"
+              data-aos="zoom-in"
+              data-aos-delay="200"
+            >
+              <div
+                class="w-20 h-20 mx-auto bg-gradient-to-br from-blue-100 to-blue-400 rounded-full flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-snowflake text-3xl text-white"></i>
+              </div>
+              <h3 class="font-bold text-xl mb-2">مراتب تبريد</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4">
+                مراتب مبردة للحفاظ على درجة حرارة مثالية
+              </p>
+              <a href="categories.html" class="text-gold hover:text-gold-dark font-medium">
+                استكشف <i class="fas fa-arrow-left mr-1"></i>
+              </a>
+            </div>
+
+            <!-- تصنيف 3 -->
+            <div
+              class="category-card bg-gray-50 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg p-6 text-center gold-border"
+              data-aos="zoom-in"
+              data-aos-delay="300"
+            >
+              <div
+                class="w-20 h-20 mx-auto bg-gradient-to-br from-green-100 to-green-400 rounded-full flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-spa text-3xl text-white"></i>
+              </div>
+              <h3 class="font-bold text-xl mb-2">مراتب طبية</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4">
+                مراتب مصممة لدعم الظهر ومنع الآلام
+              </p>
+              <a href="categories.html" class="text-gold hover:text-gold-dark font-medium">
+                استكشف <i class="fas fa-arrow-left mr-1"></i>
+              </a>
+            </div>
+
+            <!-- تصنيف 4 -->
+            <div
+              class="category-card bg-gray-50 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg p-6 text-center gold-border"
+              data-aos="zoom-in"
+              data-aos-delay="400"
+            >
+              <div
+                class="w-20 h-20 mx-auto bg-gradient-to-br from-purple-100 to-purple-400 rounded-full flex items-center justify-center mb-4"
+              >
+                <i class="fas fa-star text-3xl text-white"></i>
+              </div>
+              <h3 class="font-bold text-xl mb-2">المجموعة المميزة</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4">
+                أفضل المراتب التي نقدمها بتصميمات حصرية
+              </p>
+              <a href="categories.html" class="text-gold hover:text-gold-dark font-medium">
+                استكشف <i class="fas fa-arrow-left mr-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم المنتجات -->
+      <section id="products" class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl font-bold text-center mb-4 luxury-font section-title"
+            data-aos="fade-up"
+          >
+            منتجاتنا <span class="text-gold">الفاخرة</span>
+          </h2>
+          <p
+            class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            اكتشف مجموعة منتجاتنا المصممة بعناية لتوفر لك تجربة نوم استثنائية
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- منتج 1 -->
+            <div
+              class="product-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <div class="relative h-60 overflow-hidden glossy-overlay">
+                <img
+                src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                alt="مرتبة ريتش سليب الفاخرة"
+                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+                <div class="absolute top-4 right-4">
+                  <span
+                    class="bg-gold text-white text-xs font-bold px-3 py-1 rounded-full"
+                    >الأكثر مبيعاً</span
+                  >
+                </div>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-2">
+                  <a href="single_product.html" class="font-bold text-xl">ريتش سليب الفاخرة</a>
+                  <button class="text-gold hover:text-gold-dark text-xl">
+                    <i class="far fa-heart"></i>
+                  </button>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm mr-2">(4.5)</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  مرتبة فاخرة بتقنية التبريد المتقدم ودعم فائق للظهر.
                 </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- تصنيف المراتب الفاخرة -->
-                    <div class="category-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border" data-aos="fade-up" data-aos-delay="100">
-                        <div class="relative">
-                            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80')"></div>
-                            <span class="product-count">24 منتج</span>
-                            <span class="featured-badge">مميز</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2">المراتب الفاخرة</h3>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                مجموعة استثنائية من المراتب المصنوعة من أفضل المواد لتوفر لك تجربة نوم فاخرة.
-                            </p>
-                            <div class="flex justify-between items-center">
-                                <a href="products.html" class="luxury-btn text-white px-6 py-2 rounded-lg">
-                                    استعرض المنتجات
-                                </a>
-                                <span class="text-gold font-bold">تبدأ من 1,200 ر.س</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- تصنيف المراتب الطبية -->
-                    <div class="category-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border" data-aos="fade-up" data-aos-delay="200">
-                        <div class="relative">
-                            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1616628188855-ef005882215f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80')"></div>
-                            <span class="product-count">18 منتج</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2">المراتب الطبية</h3>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                مراتب مصممة طبياً لدعم الجسم وتخفيف آلام الظهر والمفاصل لتحسين جودة النوم.
-                            </p>
-                            <div class="flex justify-between items-center">
-                                <a href="products.html" class="luxury-btn text-white px-6 py-2 rounded-lg">
-                                    استعرض المنتجات
-                                </a>
-                                <span class="text-gold font-bold">تبدأ من 1,500 ر.س</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- تصنيف المراتب الذكية -->
-                    <div class="category-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border" data-aos="fade-up" data-aos-delay="300">
-                        <div class="relative">
-                            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1616628188765-86d312fb5c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80')"></div>
-                            <span class="product-count">12 منتج</span>
-                            <span class="featured-badge">جديد</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2">المراتب الذكية</h3>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                مراتب متطورة مزودة بتقنيات ذكية لتتبع جودة النوم وتوفير إحصائيات مفصلة.
-                            </p>
-                            <div class="flex justify-between items-center">
-                                <a href="products.html" class="luxury-btn text-white px-6 py-2 rounded-lg">
-                                    استعرض المنتجات
-                                </a>
-                                <span class="text-gold font-bold">تبدأ من 2,500 ر.س</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- تصنيف المراتب القابلة للتعديل -->
-                    <div class="category-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border" data-aos="fade-up" data-aos-delay="100">
-                        <div class="relative">
-                            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1616628188596-4b4c5f7a0b3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80')"></div>
-                            <span class="product-count">15 منتج</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2">المراتب القابلة للتعديل</h3>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                مراتب يمكن تعديل وضعها لتوفير راحة مثالية للقراءة أو مشاهدة التلفاز في السرير.
-                            </p>
-                            <div class="flex justify-between items-center">
-                                <a href="products.html" class="luxury-btn text-white px-6 py-2 rounded-lg">
-                                    استعرض المنتجات
-                                </a>
-                                <span class="text-gold font-bold">تبدأ من 2,000 ر.س</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- تصنيف المراتب الهجينة -->
-                    <div class="category-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border" data-aos="fade-up" data-aos-delay="200">
-                        <div class="relative">
-                            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1616628188765-86d312fb5c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80')"></div>
-                            <span class="product-count">20 منتج</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2">المراتب الهجينة</h3>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                مراتب تجمع بين مزايا المراتب اللبادية والمراتب الزنبركية لتوفير توازن مثالي.
-                            </p>
-                            <div class="flex justify-between items-center">
-                                <a href="products.html" class="luxury-btn text-white px-6 py-2 rounded-lg">
-                                    استعرض المنتجات
-                                </a>
-                                <span class="text-gold font-bold">تبدأ من 1,800 ر.س</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- تصنيف المراتب العائلية -->
-                    <div class="category-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border" data-aos="fade-up" data-aos-delay="300">
-                        <div class="relative">
-                            <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1616628188596-4b4c5f7a0b3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80')"></div>
-                            <span class="product-count">22 منتج</span>
-                            <span class="featured-badge">عرض خاص</span>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2">المراتب العائلية</h3>
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                مجموعة متنوعة من المراتب المناسبة لجميع أفراد العائلة بمواصفات وأحجام مختلفة.
-                            </p>
-                            <div class="flex justify-between items-center">
-                                <a href="products.html" class="luxury-btn text-white px-6 py-2 rounded-lg">
-                                    استعرض المنتجات
-                                </a>
-                                <span class="text-gold font-bold">تبدأ من 1,000 ر.س</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-xl font-bold text-gold"
+                    >4,499 <span class="text-base font-normal">ج.م</span></span
+                  >
+                  <button
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
+                    data-id="1"
+                    data-name="ريتش سليب الفاخرة"
+                    data-price="4499"
+                    data-image="https://images.unsplash.com/photo-1541123356219-284ebe98a8e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+                  >
+                    <i class="fas fa-shopping-cart mr-2"></i> إضافة للسلة
+                  </button>
                 </div>
+              </div>
             </div>
-        </section>
 
-        <!-- قسم المميزات -->
-        <section class="py-20 bg-gray-50 dark:bg-gray-900">
-            <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-4 luxury-font section-title" data-aos="fade-up">
-                    لماذا تختار <span class="text-gold">ريتش هاوس</span>
-                </h2>
-                <p class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-                    نقدم لكم مجموعة من المميزات الاستثنائية التي تجعل تجربة التسوق معنا فريدة من نوعها
+            <!-- منتج 2 -->
+            <div
+              class="product-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <div class="relative h-60 overflow-hidden glossy-overlay">
+                <img
+                  src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  alt="مرتبة رويال كومفورت"
+                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-2">
+                  <a href="single_product.html" class="font-bold text-xl">رويال كومفورت</a>
+                  <button class="text-gold hover:text-gold-dark text-xl">
+                    <i class="far fa-heart"></i>
+                  </button>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm mr-2">(4.0)</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  مرتبة ملكية براحة لا تضاهى وتصميم يضمن توزيع وزن الجسم.
                 </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="text-center" data-aos="fade-up" data-aos-delay="100">
-                        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-gold-light to-gold rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-shield-alt text-3xl text-white"></i>
-                        </div>
-                        <h3 class="font-bold text-xl mb-2">ضمان 15 عاماً</h3>
-                        <p class="text-gray-600 dark:text-gray-300">ضمان ممتد يصل إلى 15 عاماً على جميع منتجاتنا الفاخرة</p>
-                    </div>
-
-                    <div class="text-center" data-aos="fade-up" data-aos-delay="200">
-                        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-blue-100 to-blue-400 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-truck text-3xl text-white"></i>
-                        </div>
-                        <h3 class="font-bold text-xl mb-2">توصيل مجاني</h3>
-                        <p class="text-gray-600 dark:text-gray-300">خدمة التوصيل والتركيب المجانية لجميع مشترياتك</p>
-                    </div>
-
-                    <div class="text-center" data-aos="fade-up" data-aos-delay="300">
-                        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-green-100 to-green-400 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-exchange-alt text-3xl text-white"></i>
-                        </div>
-                        <h3 class="font-bold text-xl mb-2">استبدال مجاني</h3>
-                        <p class="text-gray-600 dark:text-gray-300">إمكانية استبدال المنتج مجاناً خلال 100 يوم</p>
-                    </div>
-
-                    <div class="text-center" data-aos="fade-up" data-aos-delay="400">
-                        <div class="w-20 h-20 mx-auto bg-gradient-to-br from-purple-100 to-purple-400 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-user-md text-3xl text-white"></i>
-                        </div>
-                        <h3 class="font-bold text-xl mb-2">استشارات النوم</h3>
-                        <p class="text-gray-600 dark:text-gray-300">استشارات مجانية من خبراء النوم المتخصصين</p>
-                    </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-xl font-bold text-gold"
+                    >5,999 <span class="text-base font-normal">ج.م</span></span
+                  >
+                  <button
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
+                    data-id="2"
+                    data-name="رويال كومفورت"
+                    data-price="5999"
+                    data-image="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  >
+                    <i class="fas fa-shopping-cart mr-2"></i> إضافة للسلة
+                  </button>
                 </div>
+              </div>
             </div>
-        </section>
 
-        <!-- قسم الأسئلة الشائعة -->
-        <section class="py-20 bg-white dark:bg-gray-800">
-            <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-4 luxury-font section-title" data-aos="fade-up">
-                    أسئلة <span class="text-gold">شائعة</span>
-                </h2>
-                <p class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-                    إجابات على الأسئلة الأكثر شيوعاً حول منتجاتنا وخدماتنا
+            <!-- منتج 3 -->
+            <div
+              class="product-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <div class="relative h-60 overflow-hidden glossy-overlay">
+                <img
+                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  alt="مرتبة كول ماكس"
+                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+                <div class="absolute top-4 right-4">
+                  <span
+                    class="bg-accent text-white text-xs font-bold px-3 py-1 rounded-full"
+                    >جديد</span
+                  >
+                </div>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-2">
+                  <a href="single_product.html" class="font-bold text-xl">كول ماكس برو</a>
+                  <button class="text-gold hover:text-gold-dark text-xl">
+                    <i class="far fa-heart"></i>
+                  </button>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm mr-2">(5.0)</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  مرتبة بتقنية التبريد المتطورة للمناطق الحارة، مع دعم متميز.
                 </p>
-
-                <div class="max-w-3xl mx-auto space-y-6">
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="100">
-                        <h3 class="font-bold text-lg mb-2">كيف أختار المرتبة المناسبة لي؟</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            نوصي بزيارة أحد فروعنا لتجربة المراتب شخصياً، أو يمكنك التواصل مع مستشار النوم الخاص بنا للحصول على توصية مخصصة بناءً على احتياجاتك.
-                        </p>
-                    </div>
-
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="200">
-                        <h3 class="font-bold text-lg mb-2">ما هي مدة الضمان على المراتب؟</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            نقدم ضماناً يصل إلى 15 عاماً على منتجاتنا الفاخرة، مع تفاصيل محددة تختلف حسب نوع المرتبة.
-                        </p>
-                    </div>
-
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="300">
-                        <h3 class="font-bold text-lg mb-2">هل تقدمون خدمة التوصيل والتركيب؟</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            نعم، نقدم خدمة التوصيل والتركيب المجانية لجميع مشترياتك في جميع أنحاء المملكة.
-                        </p>
-                    </div>
-
-                    <div class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-6" data-aos="fade-up" data-aos-delay="400">
-                        <h3 class="font-bold text-lg mb-2">هل يمكنني استبدال المرتبة إذا لم تكن مناسبة؟</h3>
-                        <p class="text-gray-600 dark:text-gray-300">
-                            نعم، نقدم سياسة استبدال مجانية خلال 100 يوم من الشراء لضمان رضاك التام عن منتجنا.
-                        </p>
-                    </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-xl font-bold text-gold"
+                    >6,499 <span class="text-base font-normal">ج.م</span></span
+                  >
+                  <button
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
+                    data-id="3"
+                    data-name="كول ماكس برو"
+                    data-price="6499"
+                    data-image="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  >
+                    <i class="fas fa-shopping-cart mr-2"></i> إضافة للسلة
+                  </button>
                 </div>
+              </div>
             </div>
-        </section>
+          </div>
+
+          <div
+            class="text-center mt-12"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
+            <a
+              href="products.html"
+              class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium glossy-overlay"
+            >
+              <i class="fas fa-eye mr-2"></i> عرض جميع المنتجات
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم العروض الخاصة -->
+      <section id="offers" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl font-bold text-center mb-4 luxury-font section-title"
+            data-aos="fade-up"
+          >
+            عروض <span class="text-gold">خاصة</span>
+          </h2>
+          <p
+            class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            استفد من عروضنا المميزة لفترة محدودة واحصل على أفضل الأسعار
+            لمنتجاتنا الفاخرة
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- عرض 1 -->
+            <div
+              class="product-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <div class="relative h-60 overflow-hidden glossy-overlay">
+                <img
+                src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                alt="مرتبة ريتش سليب الفاخرة"
+                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+                <div class="special-offer-badge">خصم 25%</div>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-2">
+                  <a href="single_product.html" class="font-bold text-xl">ريتش سليب الفاخرة</a>
+                  <button class="text-gold hover:text-gold-dark text-xl">
+                    <i class="far fa-heart"></i>
+                  </button>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm mr-2">(4.5)</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  مرتبة فاخرة بتقنية التبريد المتقدم ودعم فائق للظهر.
+                </p>
+                <div class="flex justify-between items-center">
+                  <div>
+                    <span class="text-xl font-bold text-gold"
+                      >3,374
+                      <span class="text-base font-normal">ج.م</span></span
+                    >
+                    <span class="price-original">4,499 ج.م</span>
+                  </div>
+                  <button
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
+                    data-id="1"
+                    data-name="ريتش سليب الفاخرة"
+                    data-price="3374"
+                    data-image="https://images.unsplash.com/photo-1541123356219-284ebe98a8e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
+                  >
+                    <i class="fas fa-shopping-cart mr-2"></i> إضافة للسلة
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- عرض 2 -->
+            <div
+              class="product-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <div class="relative h-60 overflow-hidden glossy-overlay">
+                <img
+                  src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  alt="مرتبة رويال كومفورت"
+                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+                <div class="special-offer-badge">خصم 20%</div>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-2">
+                  <a href="single_product.html" class="font-bold text-xl">رويال كومفورت</a>
+                  <button class="text-gold hover:text-gold-dark text-xl">
+                    <i class="far fa-heart"></i>
+                  </button>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm mr-2">(4.0)</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  مرتبة ملكية براحة لا تضاهى وتصميم يضمن توزيع وزن الجسم.
+                </p>
+                <div class="flex justify-between items-center">
+                  <div>
+                    <span class="text-xl font-bold text-gold"
+                      >4,799
+                      <span class="text-base font-normal">ج.م</span></span
+                    >
+                    <span class="price-original">5,999 ج.م</span>
+                  </div>
+                  <button
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
+                    data-id="2"
+                    data-name="رويال كومفورت"
+                    data-price="4799"
+                    data-image="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  >
+                    <i class="fas fa-shopping-cart mr-2"></i> إضافة للسلة
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- عرض 3 -->
+            <div
+              class="product-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <div class="relative h-60 overflow-hidden glossy-overlay">
+                <img
+                  src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  alt="مرتبة كول ماكس"
+                  class="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+                <div class="special-offer-badge">خصم 15%</div>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-start mb-2">
+                  <a href="single_product.html" class="font-bold text-xl">كول ماكس برو</a>
+                  <button class="text-gold hover:text-gold-dark text-xl">
+                    <i class="far fa-heart"></i>
+                  </button>
+                </div>
+                <div class="flex items-center mb-4">
+                  <div class="flex text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <span class="text-gray-500 text-sm mr-2">(5.0)</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  مرتبة بتقنية التبريد المتطورة للمناطق الحارة، مع دعم متميز.
+                </p>
+                <div class="flex justify-between items-center">
+                  <div>
+                    <span class="text-xl font-bold text-gold"
+                      >5,524
+                      <span class="text-base font-normal">ج.م</span></span
+                    >
+                    <span class="price-original">6,499 ج.م</span>
+                  </div>
+                  <button
+                    class="add-to-cart bg-gray-100 dark:bg-gray-700 text-gold hover:bg-gold hover:text-white px-4 py-2 rounded-lg transition glossy-overlay"
+                    data-id="3"
+                    data-name="كول ماكس برو"
+                    data-price="5524"
+                    data-image="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  >
+                    <i class="fas fa-shopping-cart mr-2"></i> إضافة للسلة
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="text-center mt-12"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
+            <a
+              href="offers.html"
+              class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium glossy-overlay"
+            >
+              <i class="fas fa-eye mr-2"></i> عرض جميع العروض
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم عنّا -->
+<!-- قسم عنّا -->
+      <section
+        id="about"
+        class="py-20 bg-gray-50 dark:bg-gray-900 overflow-hidden relative"
+      >
+        <div class="container mx-auto px-4">
+          <!-- Section Title -->
+          <h2
+            class="text-3xl font-bold text-center mb-4 luxury-font section-title"
+            data-aos="fade-up"
+          >
+            عن <span class="text-gold">ريتش هاوس</span>
+          </h2>
+          <p
+            class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            قصتنا ورسالتنا في توفير أفضل تجربة نوم لعملائنا
+          </p>
+
+          <!-- About Content -->
+          <div
+            class="flex flex-col lg:flex-row items-center gap-12 mb-16"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <!-- Image Section -->
+            <div class="lg:w-1/2 relative" data-aos="fade-right" data-aos-delay="300">
+              <div
+                class="w-full h-96 bg-gradient-to-br from-gold-light to-gold rounded-3xl shadow-2xl flex items-center justify-center overflow-hidden glossy-overlay"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1158&q=80"
+                  alt="عن ريتش هاوس"
+                  class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-out"
+                />
+              </div>
+
+              <!-- Decorative Circles -->
+              <div
+                class="absolute bottom-0 left-0 w-28 h-28 bg-gold/20 rounded-full blur-xl"
+              ></div>
+              <div
+                class="absolute top-0 right-0 w-20 h-20 bg-accent/20 rounded-full blur-lg"
+              ></div>
+            </div>
+
+            <!-- Text Content -->
+            <div class="lg:w-1/2" data-aos="fade-left" data-aos-delay="400">
+              <h3 class="text-2xl font-bold mb-6 luxury-font">
+                قصتنا <span class="text-gold">ورسالتنا</span>
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                تأسست ريتش هاوس في عام 2010 بمهمة واضحة: توفير أفضل تجربة نوم ممكنة
+                لعملائنا. نحن نؤمن بأن النوم الجيد هو أساس الحياة الصحية والإنتاجية.
+              </p>
+              <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                على مر السنين، طورنا شراكات مع أفضل مصنعي المراتب عالمياً، وانتقينا
+                بعناية كل منتج نقدمه لضمان أعلى معايير الجودة والراحة.
+              </p>
+              <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                مهمتنا لا تقتصر على بيع المراتب فحسب، بل نهدف إلى تحسين جودة حياة
+                عملائنا من خلال توفير حلول نوم مخصصة تناسب احتياجاتهم الفردية.
+              </p>
+
+              <a
+                href="#contact"
+                class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium inline-block glossy-overlay transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              >
+                <i class="fas fa-phone-alt mr-2"></i> تواصل معنا
+              </a>
+            </div>
+          </div>
+
+          <!-- Stats Section -->
+          <div
+            class="about-stats grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+            data-aos="zoom-in-up"
+          >
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="100"
+              >
+                13+
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                سنوات من الخبرة
+              </div>
+            </div>
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="200"
+              >
+                50,000+
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                عميل راضي
+              </div>
+            </div>
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="300"
+              >
+                15
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                ضمان سنوي
+              </div>
+            </div>
+            <div class="stat-item">
+              <div
+                class="stat-value text-3xl font-bold text-gold mb-2"
+                data-aos="zoom-in"
+                data-aos-delay="400"
+              >
+                98%
+              </div>
+              <div class="stat-label text-gray-600 dark:text-gray-300">
+                عملاء موصي بنا
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- قسم المدونة -->
+      <section id="blog" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl font-bold text-center mb-4 luxury-font section-title"
+            data-aos="fade-up"
+          >
+            مدونة <span class="text-gold">ريتش هاوس</span>
+          </h2>
+          <p
+            class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            نصائح ومعلومات مفيدة حول تحسين جودة النوم واختيار المرتبة المناسبة
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- مقال 1 -->
+            <article
+              class="blog-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <div class="relative h-56 overflow-hidden glossy-overlay">
+                <img
+                  src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80"
+                  alt="كيف تختار المرتبة المثالية"
+                  class="blog-card-image w-full h-full object-cover"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span
+                    ><i class="far fa-calendar mr-1"></i> 15 يونيو 2023</span
+                  >
+                  <span class="mx-2">•</span>
+                  <span><i class="far fa-clock mr-1"></i> 5 دقائق قراءة</span>
+                </div>
+                <a href="single-post.html" class="font-bold text-xl mb-3">
+                  كيف تختار المرتبة المثالية لنومك
+                </a>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  دليل شامل لاختيار المرتبة المناسبة بناءً على وضعية نومك، وزنك،
+                  واحتياجاتك الصحية.
+                </p>
+                <a
+                  href="single-post.html"
+                  class="text-gold hover:text-gold-dark font-medium flex items-center"
+                >
+                  اقرأ المزيد
+                  <i class="fas fa-arrow-left mr-2"></i>
+                </a>
+              </div>
+            </article>
+
+            <!-- مقال 2 -->
+            <article
+              class="blog-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <div class="relative h-56 overflow-hidden glossy-overlay">
+                <img
+                  src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                  alt="أهمية النوم الجيد"
+                  class="blog-card-image w-full h-full object-cover"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span><i class="far fa-calendar mr-1"></i> 8 يونيو 2023</span>
+                  <span class="mx-2">•</span>
+                  <span><i class="far fa-clock mr-1"></i> 7 دقائق قراءة</span>
+                </div>
+                <a href="single-post.html" class="font-bold text-xl mb-3">
+                  أهمية النوم الجيد لصحتك وإنتاجيتك
+                </a>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  اكتشف كيف يؤثر النوم على صحتك الجسدية والعقلية، ونصائح لتحسين
+                  جودة نومك.
+                </p>
+                <a
+                  href="single-post.html"
+                  class="text-gold hover:text-gold-dark font-medium flex items-center"
+                >
+                  اقرأ المزيد
+                  <i class="fas fa-arrow-left mr-2"></i>
+                </a>
+              </div>
+            </article>
+
+            <!-- مقال 3 -->
+            <article
+              class="blog-card bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg gold-border"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <div class="relative h-56 overflow-hidden glossy-overlay">
+                <img
+                  src="https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1157&q=80"
+                  alt="تنظيف المراتب"
+                  class="blog-card-image w-full h-full object-cover"
+                />
+              </div>
+              <div class="p-6">
+                <div class="flex items-center text-sm text-gray-500 mb-3">
+                  <span><i class="far fa-calendar mr-1"></i> 1 يونيو 2023</span>
+                  <span class="mx-2">•</span>
+                  <span><i class="far fa-clock mr-1"></i> 4 دقائق قراءة</span>
+                </div>
+                <a href="single-post.html" class="font-bold text-xl mb-3">
+                  دليل العناية بالمرتبة وإطالة عمرها الافتراضي
+                </a>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  نصائح عملية لتنظيف المرتبة والعناية بها للحفاظ على جودتها
+                  وإطالة عمرها الافتراضي.
+                </p>
+                <a
+                  href="single-post.html"
+                  class="text-gold hover:text-gold-dark font-medium flex items-center"
+                >
+                  اقرأ المزيد
+                  <i class="fas fa-arrow-left mr-2"></i>
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <div
+            class="text-center mt-12"
+            data-aos="fade-up"
+            data-aos-delay="400"
+          >
+            <a
+              href="blogs.html"
+              class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium glossy-overlay"
+            >
+              <i class="fas fa-newspaper mr-2"></i> عرض جميع المقالات
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم اتصل بنا -->
+      <section id="contact" class="py-20 bg-gray-50 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+          <h2
+            class="text-3xl font-bold text-center mb-4 luxury-font section-title"
+            data-aos="fade-up"
+          >
+            اتصل <span class="text-gold">بنا</span>
+          </h2>
+          <p
+            class="text-center text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            نحن هنا للإجابة على جميع استفساراتك وتقديم أفضل خدمة لعملائنا
+          </p>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div data-aos="fade-right" data-aos-delay="300">
+              <h3 class="text-2xl font-bold mb-6 luxury-font">
+                معلومات <span class="text-gold">الاتصال</span>
+              </h3>
+
+              <div class="contact-info-item">
+                <div class="contact-info-icon">
+                  <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">عنواننا</h4>
+                  <p class="text-gray-600 dark:text-gray-300">
+                    123 شارع النوم, الرياض, السعودية
+                  </p>
+                </div>
+              </div>
+
+              <div class="contact-info-item">
+                <div class="contact-info-icon">
+                  <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">هاتفنا</h4>
+                  <p class="text-gray-600 dark:text-gray-300">
+                    +966 12 345 6789
+                  </p>
+                </div>
+              </div>
+
+              <div class="contact-info-item">
+                <div class="contact-info-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">بريدنا الإلكتروني</h4>
+                  <p class="text-gray-600 dark:text-gray-300">
+                    info@richhouse.com
+                  </p>
+                </div>
+              </div>
+
+              <div class="contact-info-item">
+                <div class="contact-info-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold">ساعات العمل</h4>
+                  <p class="text-gray-600 dark:text-gray-300">
+                    الأحد - الخميس: 9ص - 5م
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-8">
+                <h4 class="font-bold mb-4">
+                  تابعنا على وسائل التواصل الاجتماعي
+                </h4>
+                <div class="flex space-x-4 space-x-reverse">
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold hover:bg-gold hover:text-white transition"
+                  >
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold hover:bg-gold hover:text-white transition"
+                  >
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold hover:bg-gold hover:text-white transition"
+                  >
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                  <a
+                    href="#"
+                    class="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center text-gold hover:bg-gold hover:text-white transition"
+                  >
+                    <i class="fab fa-youtube"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div data-aos="fade-left" data-aos-delay="300">
+              <h3 class="text-2xl font-bold mb-6 luxury-font">
+                أرسل <span class="text-gold">رسالة</span>
+              </h3>
+              <form class="space-y-6">
+                <div class="contact-form-grid">
+                  <div>
+                    <label for="name" class="block mb-2 font-medium"
+                      >الاسم الكامل</label
+                    >
+                    <input
+                      type="text"
+                      id="name"
+                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gold dark:bg-gray-800"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="email" class="block mb-2 font-medium"
+                      >البريد الإلكتروني</label
+                    >
+                    <input
+                      type="email"
+                      id="email"
+                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gold dark:bg-gray-800"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label for="subject" class="block mb-2 font-medium"
+                    >الموضوع</label
+                  >
+                  <input
+                    type="text"
+                    id="subject"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gold dark:bg-gray-800"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="message" class="block mb-2 font-medium"
+                    >الرسالة</label
+                  >
+                  <textarea
+                    id="message"
+                    rows="5"
+                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gold dark:bg-gray-800"
+                    required
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  class="luxury-btn text-white w-full py-3.5 rounded-lg text-lg font-medium glossy-overlay"
+                >
+                  <i class="fas fa-paper-plane mr-2"></i> إرسال الرسالة
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div
+            class="map-container mt-16"
+            data-aos="zoom-in"
+            data-aos-delay="400"
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.438385228759!2d46.67278231500071!3d24.81358458408333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2ee3d9c16b0e71%3A0x6d2bd1917c6d1e4e!2sRiyadh%2C%20Saudi%20Arabia!5e0!3m2!1sen!2s!4v1647351397237!5m2!1sen!2s"
+              width="100%"
+              height="100%"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- قسم الشركاء -->
+<!-- قسم شركاؤنا في النجاح -->
+    <!-- <section class="py-16 bg-white dark:bg-gray-800 overflow-hidden relative">
+      <div class="container mx-auto px-4">
+        <h2
+          class="text-2xl font-bold text-center mb-12 luxury-font"
+          data-aos="fade-up"
+        >
+          شركاؤنا في <span class="text-gold">النجاح</span>
+        </h2>
+        <div
+          class="client-logos flex flex-wrap justify-center items-center gap-8 md:gap-12"
+          data-aos="zoom-in"
+          data-aos-delay="200"
+        >
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">SLEEPWELL</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">DORMEVO</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">SERTA</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">TEMPUR</span>
+          </div>
+          <div
+            class="client-logo w-32 h-16 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-gray-700 shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span class="text-2xl font-bold text-gray-400">SIMMONS</span>
+          </div>
+        </div>
+      </div>
+    </section> -->
+<!-- قسم الفروع -->
+<section class="py-16 bg-white dark:bg-gray-800 overflow-hidden relative" id="branches">
+  <div class="container mx-auto px-4">
+    <h2
+      class="text-2xl font-bold text-center mb-12 luxury-font"
+      data-aos="fade-up"
+    >
+      فروعنا
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- فرع الرياض -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg gold-border p-6 flex flex-col items-center" data-aos="fade-up" data-aos-delay="100">
+        <img src="https://maps.gstatic.com/tactile/pane/default_geocode-2x.png" alt="فرع الرياض" class="w-32 h-32 rounded-lg mb-4 object-cover" />
+        <h3 class="font-bold text-xl mb-2 luxury-font text-gold">فرع الرياض</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-2 text-center">123 شارع النوم، حي الملك فهد، الرياض</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">هاتف: +966 12 345 6789</p>
+        <a href="https://goo.gl/maps/xyz" target="_blank" class="luxury-btn text-white px-6 py-2 rounded-lg mt-2">عرض على الخريطة</a>
+      </div>
+      <!-- فرع جدة -->
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg gold-border p-6 flex flex-col items-center" data-aos="fade-up" data-aos-delay="200">
+        <img src="https://maps.gstatic.com/tactile/pane/default_geocode-2x.png" alt="فرع جدة" class="w-32 h-32 rounded-lg mb-4 object-cover" />
+        <h3 class="font-bold text-xl mb-2 luxury-font text-gold">فرع جدة</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-2 text-center">456 شارع الراحة، حي الصفا، جدة</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-2">هاتف: +966 12 987 6543</p>
+        <a href="https://goo.gl/maps/abc" target="_blank" class="luxury-btn text-white px-6 py-2 rounded-lg mt-2">عرض على الخريطة</a>
+      </div>
+    </div>
+    <div
+    class="text-center mt-12"
+    data-aos="fade-up"
+    data-aos-delay="400"
+  >
+    <a
+      href="branches.html"
+      class="luxury-btn text-white px-8 py-3.5 rounded-lg text-lg font-medium glossy-overlay"
+    >
+      <i class="fas fa-newspaper mr-2"></i> عرض جميع الفروع
+    </a>
+  </div>
+  </div>
+</section>
+
+      <!-- قسم الاشتراك في النشرة البريدية -->
+      <section
+        class="py-20 bg-gradient-to-r from-gold/10 to-accent/10 dark:from-gold/20 dark:to-accent/20"
+      >
+        <div class="container mx-auto px-4">
+          <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4 luxury-font" data-aos="fade-up">
+              اشترك في <span class="text-gold">النشرة البريدية</span>
+            </h2>
+            <p
+              class="text-gray-600 dark:text-gray-300 mb-8"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              اشترك الآن للحصول على آخر العروض والمقالات والنصائح حول تحسين جودة
+              نومك مباشرة إلى بريدك الإلكتروني.
+            </p>
+
+            <form
+              class="flex flex-col sm:flex-row gap-4"
+              data-aos="zoom-in"
+              data-aos-delay="300"
+            >
+              <input
+                type="email"
+                placeholder="بريدك الإلكتروني"
+                class="flex-1 px-6 py-3.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-gold dark:bg-gray-800"
+              />
+              <button
+                type="submit"
+                class="luxury-btn text-white px-8 py-3.5 rounded-lg font-medium glossy-overlay"
+              >
+                <i class="fas fa-paper-plane mr-2"></i> اشترك الآن
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
     </main>
-
 
     <!-- الفوتر -->
     <footer class="bg-primary-dark text-white pt-16 pb-8">
@@ -3030,7 +3976,7 @@
     </footer>
 
     <!-- مساعد الذكاء الاصطناعي -->
-    <div class="ai-chatbot">
+    <!-- <div class="ai-chatbot">
       <div class="ai-chatbot-toggle">
         <i class="fas fa-robot text-xl"></i>
       </div>
@@ -3092,7 +4038,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- إضافة AOS.js -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -3150,14 +4096,67 @@
         document.body.classList.remove("cart-open");
       });
 
+      // Close cart when clicking outside on mobile (RTL-aware)
+      document.addEventListener("click", (e) => {
+        if (
+          window.innerWidth <= 768 &&
+          document.body.classList.contains("cart-open") &&
+          !cartPanel.contains(e.target) &&
+          !cartButton.contains(e.target) &&
+          !mobileCartButton.contains(e.target)
+        ) {
+          document.body.classList.remove("cart-open");
+        }
+      });
+
+      // Improved touch handling for mobile
+      document.addEventListener("touchstart", function () {}, { passive: true });
+
+      // Prevent zoom on double tap for buttons/links
+      document.querySelectorAll("button, a, .luxury-btn").forEach((element) => {
+        element.addEventListener(
+          "touchstart",
+          function (e) {
+            if (e.touches.length > 1) {
+              e.preventDefault();
+            }
+          },
+          { passive: false }
+        );
+      });
+
+      // Fix RTL specific positioning for AI chatbot on mobile
+      function fixRTLMobileIssues() {
+        if (document.dir === "rtl") {
+          const aiChatbot = document.querySelector(".ai-chatbot");
+          if (aiChatbot && window.innerWidth < 768) {
+            aiChatbot.style.right = "auto";
+            aiChatbot.style.left = "20px";
+          }
+        }
+      }
+
+      window.addEventListener("load", fixRTLMobileIssues);
+      window.addEventListener("resize", fixRTLMobileIssues);
+
       // وظيفة قائمة الجوال
       const hamburger = document.getElementById("hamburger");
       const mobileMenu = document.getElementById("mobile-menu");
+      const mobileMenuClose = document.querySelector(".mobile-menu-close");
 
-      hamburger.addEventListener("click", () => {
+      function toggleMobileMenu() {
+        const isOpening = !mobileMenu.classList.contains("active");
         mobileMenu.classList.toggle("active");
         hamburger.classList.toggle("active");
-      });
+        if (isOpening) {
+          document.body.classList.add("mobile-menu-open");
+        } else {
+          document.body.classList.remove("mobile-menu-open");
+        }
+      }
+
+      hamburger.addEventListener("click", toggleMobileMenu);
+      if (mobileMenuClose) mobileMenuClose.addEventListener("click", toggleMobileMenu);
 
       // إغلاق قائمة الجوال عند النقر على رابط
       const mobileMenuLinks = mobileMenu.querySelectorAll("a");
@@ -3165,7 +4164,36 @@
         link.addEventListener("click", () => {
           mobileMenu.classList.remove("active");
           hamburger.classList.remove("active");
+          document.body.classList.remove("mobile-menu-open");
         });
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          window.innerWidth <= 1150 &&
+          mobileMenu.classList.contains("active") &&
+          !mobileMenu.contains(e.target) &&
+          !hamburger.contains(e.target)
+        ) {
+          toggleMobileMenu();
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+          toggleMobileMenu();
+        }
+      });
+
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 1150) {
+          mobileMenu.classList.remove("active");
+          hamburger.classList.remove("active");
+          document.body.classList.remove("mobile-menu-open");
+        }
       });
 
       // وظيفة زر العودة للأعلى
@@ -3315,33 +4343,17 @@ toggles.forEach((toggle) => {
       }, 2000);
 
       // مساعد الذكاء الاصطناعي
-      const aiToggle = document.querySelector(".ai-chatbot-toggle");
-      const aiClose = document.querySelector(".ai-close");
-      const aiChatbot = document.querySelector(".ai-chatbot");
+      // const aiToggle = document.querySelector(".ai-chatbot-toggle");
+      // const aiClose = document.querySelector(".ai-close");
+      // const aiChatbot = document.querySelector(".ai-chatbot");
 
-      aiToggle.addEventListener("click", () => {
-        aiChatbot.classList.toggle("ai-chatbot-open");
-      });
+      // aiToggle.addEventListener("click", () => {
+      //   aiChatbot.classList.toggle("ai-chatbot-open");
+      // });
 
-      aiClose.addEventListener("click", () => {
-        aiChatbot.classList.remove("ai-chatbot-open");
-      });
-
-         // وظيفة التصفية
-      const filterOptions = document.querySelectorAll(".filter-option");
-      
-      filterOptions.forEach(option => {
-        option.addEventListener("click", () => {
-          // إزالة النشاط من جميع الخيارات
-          filterOptions.forEach(opt => opt.classList.remove("active", "border-gold", "text-gold"));
-          filterOptions.forEach(opt => opt.classList.add("border-gray-300", "dark:border-gray-600"));
-          
-          // إضافة النشاط للخيار المحدد
-          option.classList.add("active", "border-gold", "text-gold");
-          option.classList.remove("border-gray-300", "dark:border-gray-600");
-        });
-      });
-
+      // aiClose.addEventListener("click", () => {
+      //   aiChatbot.classList.remove("ai-chatbot-open");
+      // });
     </script>
   </body>
 </html>
